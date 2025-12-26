@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Every Takip Paneli PRO</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+margin:0;font-family:Segoe UI,Arial;
+background:#0b1220;color:#e5e7eb;
+display:flex;height:100vh;overflow:hidden
+}
+
+/* SIDEBAR */
+.sidebar{
+width:230px;background:#020617;padding:12px;
+border-right:1px solid #1e293b;overflow:auto
+}
+.sidebar h2{
+text-align:center;color:#facc15;margin:0 0 12px
+}
+.siteBtn{
+padding:10px;margin-bottom:6px;border-radius:8px;
+cursor:pointer;background:#020617;border:1px solid #020617;
+white-space:nowrap
+}
+.siteBtn:hover{border-color:#facc15}
+.siteBtn.active{
+background:#111827;border-color:#facc15;color:#facc15
+}
+
+/* MAIN */
+.main{flex:1;padding:15px;overflow:auto}
+
+/* CARD */
+.card{
+background:#020617;padding:12px;border-radius:12px;
+margin-bottom:10px;border:1px solid #1e293b
+}
+.card.critical{
+border-color:#ef4444;
+box-shadow:0 0 10px rgba(239,68,68,.25)
+}
+
+/* DOT */
+.dot{
+width:14px;height:14px;border-radius:50%;
+background:#334155;cursor:pointer
+}
+.dot.on{
+background:#22c55e;
+box-shadow:0 0 8px rgba(34,197,94,.8)
+}
+
+/* BUTTON */
+.btn{
+width:100%;padding:8px;border:none;border-radius:8px;
+margin-top:6px;cursor:pointer;font-weight:700
+}
+.primary{background:#16a34a;color:#fff}
+.danger{background:#ef4444;color:#fff}
+
+/* STATUS */
+.green{color:#22c55e}
+.yellow{color:#facc15}
+.red{color:#ef4444}
+
+/* SITE BADGE */
+.siteTagImg{
+display:inline-block;
+width:83px;height:24px;
+border-radius:8px;
+background-size:contain;
+background-position:center;
+background-repeat:no-repeat;
+border:1px solid #1e293b;
+background-color:#020617;
+vertical-align:middle;
+margin-left:6px;
+}
+
+/* LINK */
+.linkRow{display:flex;gap:6px}
+.linkRow a,.linkRow button{
+flex:1;padding:6px;border-radius:6px;
+border:1px solid #1e293b;
+background:#020617;color:#22c55e;
+cursor:pointer;text-align:center;
+text-decoration:none;font-weight:700
+}
+
+/* FILTER */
+.filters button{
+margin-right:6px;padding:6px 10px;border-radius:6px;
+border:1px solid #1e293b;background:#020617;color:#fff;
+cursor:pointer
+}
+.filters button.active{
+border-color:#facc15;color:#facc15
+}
+
+/* TOAST */
+.toast{
+position:fixed;top:20px;right:20px;
+background:#facc15;color:#000;
+padding:10px 14px;border-radius:10px;
+font-weight:800;opacity:0;transition:.3s;
+z-index:999
+}
+.toast.show{opacity:1}
+
+/* ===== MOBİL ===== */
+@media (max-width:768px){
+body{flex-direction:column;height:auto;overflow:auto}
+.sidebar{
+width:100%;display:flex;gap:6px;
+overflow-x:auto;border-right:none;
+border-bottom:1px solid #1e293b
+}
+.sidebar h2{display:none}
+.siteBtn{flex:0 0 auto;padding:8px 12px;font-size:14px}
+.main{padding:10px}
+.btn{padding:12px;font-size:15px}
+.dot{width:18px;height:18px}
+.linkRow{flex-direction:column}
+.filters button{width:100%;margin-bottom:6px}
+.toast{right:50%;transform:translateX(50%)}
+}
+</style>
+</head>
+
+<body>
+<div class="sidebar" id="sidebar"></div>
+<div class="main" id="main"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SITES=[
+"Genel Kontrol",
+"Kavbet","Odeonbet","Jojobet","Mavibet",
+"Nakitbahis","Megabahis","Matbet","Pusulabet","Egebet"
+];
+
+const LINKS={
+"Kavbet":"https://shoort.in/kavbet",
+"Odeonbet":"http://dub.is/odeonguncel",
+"Jojobet":"http://dub.pro/jojoyagit",
+"Mavibet":"http://dub.is/maviguncel",
+"Nakitbahis":"https://shoort.in/nakitbahis",
+"Megabahis":"https://dub.is/megaguncel",
+"Matbet":"http://dub.is/matguncel",
+"Pusulabet":"https://shoort.in/pusulabet",
+"Egebet":"https://shoort.in/egebet"
+};
+
+const SITE_BADGES={
+"Jojobet":"badges/bobobet.png",
+"Egebet":"badges/egebet.png",
+"Kavbet":"badges/kavbet.png",
+"Matbet":"badges/matbet.png",
+"Mavibet":"badges/mavibet.png",
+"Megabahis":"badges/megabahis.png",
+"Nakitbahis":"badges/nakitbahis.png",
+"Odeonbet":"badges/odeonbet.png",
+"Pusulabet":"badges/pusulabet.png"
+};
+
+let active="Genel Kontrol";
+let filter="all";
+const KEY="everyTakip";
+
+const $=id=>document.getElementById(id);
+const load=()=>JSON.parse(localStorage.getItem(KEY))||{};
+const save=d=>localStorage.setItem(KEY,JSON.stringify(d));
+const today=()=>new Date().toISOString().slice(0,10);
+const daysLeft=d=>d?7-Math.floor((new Date()-new Date(d))/86400000):null;
+
+function toast(m){
+const t=$("toast");
+t.textContent=m;
+t.classList.add("show");
+setTimeout(()=>t.classList.remove("show"),1500);
+}
+
+function siteTag(site){
+const img=SITE_BADGES[site];
+return img?`<span class="siteTagImg" style="background-image:url('${img}')"></span>`:"";
+}
+
+/* ===== FIXED DAILY RESET ===== */
+function dailyReset(){
+const d=load();
+const h=new Date().getHours();
+const t=today();
+if(!d._reset)d._reset=t;
+if(h>=3 && d._reset!==t){
+Object.values(d).forEach(s=>{
+if(s?.users)s.users.forEach(u=>u.lastFreeSpin=null)
+});
+d._reset=t;save(d);
+}
+}
+
+function renderSidebar(){
+const s=$("sidebar");
+s.innerHTML="<h2>EVERY TAKİP</h2>";
+SITES.forEach(x=>{
+const b=document.createElement("div");
+b.className="siteBtn"+(x===active?" active":"");
+b.textContent=x;
+b.onclick=()=>{active=x;renderSidebar();renderMain()};
+s.appendChild(b);
+});
+}
+
+function renderDashboard(data){
+let list=[];
+Object.entries(data).forEach(([site,val])=>{
+if(site.startsWith("_")||!val?.users)return;
+val.users.forEach(u=>{
+list.push({
+site,u,
+k:daysLeft(u.lastDeposit),
+got:u.lastFreeSpin===today()
+});
+});
+});
+
+if(filter==="off")list=list.filter(x=>!x.got);
+if(filter==="on")list=list.filter(x=>x.got);
+if(filter==="dead")list=list.filter(x=>x.k!==null&&x.k<=0);
+
+let html=`
+<h2>Genel Kontrol</h2>
+<div class="filters">
+<button onclick="filter='all';renderMain()" class="${filter==='all'?'active':''}">Tümü</button>
+<button onclick="filter='off';renderMain()" class="${filter==='off'?'active':''}">⚫ Alınmadı</button>
+<button onclick="filter='on';renderMain()" class="${filter==='on'?'active':''}">🟢 Alındı</button>
+<button onclick="filter='dead';renderMain()" class="${filter==='dead'?'active':''}">❌ Süre Doldu</button>
+</div>`;
+
+list.forEach(x=>{
+html+=`
+<div class="card ${x.k!==null&&x.k<=1?'critical':''}">
+<div style="display:flex;gap:10px;align-items:center">
+<div class="dot ${x.got?'on':''}" onclick="toggleTaken('${x.site}','${x.u.username}')"></div>
+<div>
+<b>${x.u.username}</b> ${siteTag(x.site)}<br>
+<span class="${x.k>2?'green':x.k>0?'yellow':'red'}">
+${x.k===null?'Tarih yok':x.k>0?`${x.k} gün`:'Süre doldu'}
+</span>
+</div>
+</div>
+</div>`;
+});
+
+$("main").innerHTML=html;
+}
+
+function renderSite(data){
+if(!data[active]) data[active]={users:[]};
+
+let html=`<h2>${active}</h2>`;
+
+if(LINKS[active]){
+html+=`
+<div class="card">
+<b>Güncel Giriş</b>
+<div class="linkRow">
+<a href="${LINKS[active]}" target="_blank">🔗 Aç</a>
+<button onclick="navigator.clipboard.writeText('${LINKS[active]}');toast('Kopyalandı')">📋 Kopyala</button>
+</div>
+</div>`;
+}
+
+html+=`
+<div class="card">
+<input id="u" placeholder="Kullanıcı adı" style="width:100%;padding:10px">
+<button class="btn primary" onclick="addUser()">Kullanıcı Ekle</button>
+</div>`;
+
+data[active].users.forEach((u,i)=>{
+const k=daysLeft(u.lastDeposit);
+html+=`
+<div class="card ${k!==null&&k<=1?'critical':''}">
+<b>${u.username}</b><br>
+<input type="date" value="${u.lastDeposit||""}" onchange="setDate(${i},this.value)">
+<button class="btn primary" onclick="markTakenIdx(${i})">Freespin Alındı</button>
+<button class="btn danger" onclick="delUser(${i})">Sil</button>
+</div>`;
+});
+
+$("main").innerHTML=html;
+}
+
+/* ===== MOBİL BUG FIXED ADD USER ===== */
+function addUser(){
+const v=$("u").value.trim();
+if(!v) return;
+
+const d=load();
+if(!d[active]) d[active]={users:[]};
+
+d[active].users.push({
+username:v,
+lastDeposit:null,
+lastFreeSpin:null
+});
+
+save(d);
+$("u").value="";
+renderMain();
+toast("Eklendi");
+}
+
+function setDate(i,v){
+const d=load();
+d[active].users[i].lastDeposit=v;
+save(d);renderMain();
+}
+
+function markTakenIdx(i){
+const d=load();
+d[active].users[i].lastFreeSpin=today();
+save(d);renderMain();
+}
+
+function toggleTaken(site,user){
+const d=load();
+const u=d[site].users.find(x=>x.username===user);
+u.lastFreeSpin=u.lastFreeSpin===today()?null:today();
+save(d);renderMain();
+}
+
+function delUser(i){
+if(!confirm("Silinsin mi?"))return;
+const d=load();
+d[active].users.splice(i,1);
+save(d);renderMain();
+}
+
+function renderMain(){
+dailyReset();
+const d=load();
+active==="Genel Kontrol"?renderDashboard(d):renderSite(d);
+}
+
+renderSidebar();
+renderMain();
+setInterval(dailyReset,60000);
+</script>
+</body>
+</html>
