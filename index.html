@@ -8,27 +8,27 @@
 <style>
 *{box-sizing:border-box}
 body{
-margin:0;font-family:Segoe UI,Arial;
-background:#0b1220;color:#e5e7eb;
-display:flex;height:100vh;overflow:hidden
+  margin:0;font-family:Segoe UI,Arial;
+  background:#0b1220;color:#e5e7eb;
+  display:flex;height:100vh;overflow:hidden
 }
 
 /* SIDEBAR */
 .sidebar{
-width:230px;background:#020617;padding:12px;
-border-right:1px solid #1e293b;overflow:auto
+  width:230px;background:#020617;padding:12px;
+  border-right:1px solid #1e293b;overflow:auto
 }
 .sidebar h2{
-text-align:center;color:#facc15;margin:0 0 12px
+  text-align:center;color:#facc15;margin:0 0 12px
 }
 .siteBtn{
-padding:10px;margin-bottom:6px;border-radius:8px;
-cursor:pointer;background:#020617;border:1px solid #020617;
-white-space:nowrap
+  padding:10px;margin-bottom:6px;border-radius:8px;
+  cursor:pointer;background:#020617;border:1px solid #020617;
+  white-space:nowrap
 }
 .siteBtn:hover{border-color:#facc15}
 .siteBtn.active{
-background:#111827;border-color:#facc15;color:#facc15
+  background:#111827;border-color:#facc15;color:#facc15
 }
 
 /* MAIN */
@@ -36,97 +36,122 @@ background:#111827;border-color:#facc15;color:#facc15
 
 /* CARD */
 .card{
-background:#020617;padding:12px;border-radius:12px;
-margin-bottom:10px;border:1px solid #1e293b
+  background:#020617;padding:12px;border-radius:12px;
+  margin-bottom:10px;border:1px solid #1e293b
 }
 .card.critical{
-border-color:#ef4444;
-box-shadow:0 0 10px rgba(239,68,68,.25)
+  border-color:#ef4444;
+  box-shadow:0 0 10px rgba(239,68,68,.25)
 }
 
 /* DOT */
 .dot{
-width:14px;height:14px;border-radius:50%;
-background:#334155;cursor:pointer
+  width:14px;height:14px;border-radius:50%;
+  background:#334155;cursor:pointer;flex:0 0 auto
 }
 .dot.on{
-background:#22c55e;
-box-shadow:0 0 8px rgba(34,197,94,.8)
+  background:#22c55e;
+  box-shadow:0 0 8px rgba(34,197,94,.8)
 }
 
 /* BUTTON */
 .btn{
-width:100%;padding:8px;border:none;border-radius:8px;
-margin-top:6px;cursor:pointer;font-weight:700
+  width:100%;padding:8px;border:none;border-radius:8px;
+  margin-top:6px;cursor:pointer;font-weight:700
 }
 .primary{background:#16a34a;color:#fff}
 .danger{background:#ef4444;color:#fff}
+.soft{background:#111827;color:#e5e7eb;border:1px solid #1e293b}
 
 /* STATUS */
 .green{color:#22c55e}
 .yellow{color:#facc15}
 .red{color:#ef4444}
+.muted{color:#94a3b8}
 
 /* SITE BADGE */
 .siteTagImg{
-display:inline-block;
-width:83px;height:24px;
-border-radius:8px;
-background-size:contain;
-background-position:center;
-background-repeat:no-repeat;
-border:1px solid #1e293b;
-background-color:#020617;
-vertical-align:middle;
-margin-left:6px;
+  display:inline-block;
+  width:83px;height:24px;
+  border-radius:8px;
+  background-size:contain;
+  background-position:center;
+  background-repeat:no-repeat;
+  border:1px solid #1e293b;
+  background-color:#020617;
+  vertical-align:middle;
+  margin-left:6px;
 }
 
 /* LINK */
 .linkRow{display:flex;gap:6px}
 .linkRow a,.linkRow button{
-flex:1;padding:6px;border-radius:6px;
-border:1px solid #1e293b;
-background:#020617;color:#22c55e;
-cursor:pointer;text-align:center;
-text-decoration:none;font-weight:700
+  flex:1;padding:6px;border-radius:6px;
+  border:1px solid #1e293b;
+  background:#020617;color:#22c55e;
+  cursor:pointer;text-align:center;
+  text-decoration:none;font-weight:700
 }
 
 /* FILTER */
 .filters button{
-margin-right:6px;padding:6px 10px;border-radius:6px;
-border:1px solid #1e293b;background:#020617;color:#fff;
-cursor:pointer
+  margin-right:6px;padding:6px 10px;border-radius:6px;
+  border:1px solid #1e293b;background:#020617;color:#fff;
+  cursor:pointer
 }
 .filters button.active{
-border-color:#facc15;color:#facc15
+  border-color:#facc15;color:#facc15
+}
+
+/* INPUTS */
+.inp{
+  width:100%;padding:10px;border-radius:10px;
+  border:1px solid #1e293b;background:#0b1220;color:#e5e7eb;
+  outline:none
+}
+.row{display:flex;gap:8px;align-items:center}
+.row > *{flex:1}
+.small{font-size:12px}
+
+/* LOG */
+.logItem{
+  padding:10px;border-radius:10px;border:1px solid #1e293b;
+  background:#0b1220;margin-top:8px
+}
+.logTop{display:flex;justify-content:space-between;gap:10px}
+.pill{
+  display:inline-block;padding:2px 8px;border-radius:999px;
+  border:1px solid #1e293b;background:#020617;
+  font-size:12px;color:#cbd5e1
 }
 
 /* TOAST */
 .toast{
-position:fixed;top:20px;right:20px;
-background:#facc15;color:#000;
-padding:10px 14px;border-radius:10px;
-font-weight:800;opacity:0;transition:.3s;
-z-index:999
+  position:fixed;top:20px;right:20px;
+  background:#facc15;color:#000;
+  padding:10px 14px;border-radius:10px;
+  font-weight:800;opacity:0;transition:.3s;
+  z-index:999
 }
 .toast.show{opacity:1}
 
 /* ===== MOBİL ===== */
 @media (max-width:768px){
-body{flex-direction:column;height:auto;overflow:auto}
-.sidebar{
-width:100%;display:flex;gap:6px;
-overflow-x:auto;border-right:none;
-border-bottom:1px solid #1e293b
-}
-.sidebar h2{display:none}
-.siteBtn{flex:0 0 auto;padding:8px 12px;font-size:14px}
-.main{padding:10px}
-.btn{padding:12px;font-size:15px}
-.dot{width:18px;height:18px}
-.linkRow{flex-direction:column}
-.filters button{width:100%;margin-bottom:6px}
-.toast{right:50%;transform:translateX(50%)}
+  body{flex-direction:column;height:auto;overflow:auto}
+  .sidebar{
+    width:100%;display:flex;gap:6px;
+    overflow-x:auto;border-right:none;
+    border-bottom:1px solid #1e293b
+  }
+  .sidebar h2{display:none}
+  .siteBtn{flex:0 0 auto;padding:8px 12px;font-size:14px}
+  .main{padding:10px}
+  .btn{padding:12px;font-size:15px}
+  .dot{width:18px;height:18px}
+  .linkRow{flex-direction:column}
+  .filters button{width:100%;margin-bottom:6px}
+  .toast{right:50%;transform:translateX(50%)}
+  .row{flex-direction:column;align-items:stretch}
 }
 </style>
 </head>
@@ -138,213 +163,373 @@ border-bottom:1px solid #1e293b
 
 <script>
 const SITES=[
-"Genel Kontrol",
-"Kavbet","Odeonbet","Jojobet","Mavibet",
-"Nakitbahis","Megabahis","Matbet","Pusulabet","Egebet"
+  "Genel Kontrol",
+  "Kavbet","Odeonbet","Jojobet","Mavibet",
+  "Nakitbahis","Megabahis","Matbet","Pusulabet","Egebet"
 ];
 
 const LINKS={
-"Kavbet":"https://shoort.in/kavbet",
-"Odeonbet":"http://dub.is/odeonguncel",
-"Jojobet":"http://dub.pro/jojoyagit",
-"Mavibet":"http://dub.is/maviguncel",
-"Nakitbahis":"https://shoort.in/nakitbahis",
-"Megabahis":"https://dub.is/megaguncel",
-"Matbet":"http://dub.is/matguncel",
-"Pusulabet":"https://shoort.in/pusulabet",
-"Egebet":"https://shoort.in/egebet"
+  "Kavbet":"https://shoort.in/kavbet",
+  "Odeonbet":"http://dub.is/odeonguncel",
+  "Jojobet":"http://dub.pro/jojoyagit",
+  "Mavibet":"http://dub.is/maviguncel",
+  "Nakitbahis":"https://shoort.in/nakitbahis",
+  "Megabahis":"https://dub.is/megaguncel",
+  "Matbet":"http://dub.is/matguncel",
+  "Pusulabet":"https://shoort.in/pusulabet",
+  "Egebet":"https://shoort.in/egebet"
 };
 
 const SITE_BADGES={
-"Jojobet":"badges/bobobet.png",
-"Egebet":"badges/egebet.png",
-"Kavbet":"badges/kavbet.png",
-"Matbet":"badges/matbet.png",
-"Mavibet":"badges/mavibet.png",
-"Megabahis":"badges/megabahis.png",
-"Nakitbahis":"badges/nakitbahis.png",
-"Odeonbet":"badges/odeonbet.png",
-"Pusulabet":"badges/pusulabet.png"
+  "Jojobet":"badges/bobobet.png",
+  "Egebet":"badges/egebet.png",
+  "Kavbet":"badges/kavbet.png",
+  "Matbet":"badges/matbet.png",
+  "Mavibet":"badges/mavibet.png",
+  "Megabahis":"badges/megabahis.png",
+  "Nakitbahis":"badges/nakitbahis.png",
+  "Odeonbet":"badges/odeonbet.png",
+  "Pusulabet":"badges/pusulabet.png"
 };
 
 let active="Genel Kontrol";
 let filter="all";
-const KEY="everyTakip";
+const KEY="everyTakip_v2";
 
 const $=id=>document.getElementById(id);
 const load=()=>JSON.parse(localStorage.getItem(KEY))||{};
 const save=d=>localStorage.setItem(KEY,JSON.stringify(d));
+
 const today=()=>new Date().toISOString().slice(0,10);
-const daysLeft=d=>d?7-Math.floor((new Date()-new Date(d))/86400000):null;
+const nowStr=()=>new Date().toLocaleString("tr-TR");
 
 function toast(m){
-const t=$("toast");
-t.textContent=m;
-t.classList.add("show");
-setTimeout(()=>t.classList.remove("show"),1500);
+  const t=$("toast");
+  t.textContent=m;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),1500);
 }
 
 function siteTag(site){
-const img=SITE_BADGES[site];
-return img?`<span class="siteTagImg" style="background-image:url('${img}')"></span>`:"";
+  const img=SITE_BADGES[site];
+  return img?`<span class="siteTagImg" style="background-image:url('${img}')"></span>`:"";
+}
+
+/* ===== 7 GÜN HESABI =====
+   Son ödeme tarihinden itibaren 7 gün kod alınabilir.
+   daysLeft: 0 => bugün son gün, -1 => süre doldu (dün bitti) gibi.
+*/
+function daysLeft(depositDate){
+  if(!depositDate) return null;
+  const start=new Date(depositDate);
+  const diff=Math.floor((new Date() - start)/86400000); // geçen gün
+  return 7 - diff; // 7,6,5..0,-1...
+}
+function statusText(k){
+  if(k===null) return {txt:"Son ödeme tarihi girilmedi", cls:"muted"};
+  if(k>0) return {txt:`Kod alabilirsin: ${k} gün kaldı`, cls: (k>2?"green":"yellow")};
+  if(k===0) return {txt:"BUGÜN son gün!", cls:"red"};
+  return {txt:"Süre doldu (7 gün geçti)", cls:"red"};
 }
 
 /* ===== FIXED DAILY RESET ===== */
 function dailyReset(){
-const d=load();
-const h=new Date().getHours();
-const t=today();
-if(!d._reset)d._reset=t;
-if(h>=3 && d._reset!==t){
-Object.values(d).forEach(s=>{
-if(s?.users)s.users.forEach(u=>u.lastFreeSpin=null)
-});
-d._reset=t;save(d);
-}
+  const d=load();
+  const h=new Date().getHours();
+  const t=today();
+  if(!d._reset) d._reset=t;
+
+  // 03:00 sonrası yeni gün -> tüm lastFreeSpin sıfır
+  if(h>=3 && d._reset!==t){
+    Object.values(d).forEach(s=>{
+      if(s?.users) s.users.forEach(u=>u.lastFreeSpin=null);
+    });
+    d._reset=t;
+    save(d);
+  }
 }
 
+/* ===== LOGS ===== */
+function ensureLogs(d){
+  if(!d._logs) d._logs=[]; // {ts, site, user, action}
+  return d;
+}
+function addLog(site, user, action){
+  const d=ensureLogs(load());
+  d._logs.unshift({ts: nowStr(), site, user, action});
+  // log şişmesin diye max 200 kayıt
+  if(d._logs.length>200) d._logs.length=200;
+  save(d);
+}
+function clearLogs(){
+  if(!confirm("Tüm log temizlensin mi?")) return;
+  const d=load();
+  d._logs=[];
+  save(d);
+  renderMain();
+  toast("Log temizlendi");
+}
+
+/* ===== UI ===== */
 function renderSidebar(){
-const s=$("sidebar");
-s.innerHTML="<h2>EVERY TAKİP</h2>";
-SITES.forEach(x=>{
-const b=document.createElement("div");
-b.className="siteBtn"+(x===active?" active":"");
-b.textContent=x;
-b.onclick=()=>{active=x;renderSidebar();renderMain()};
-s.appendChild(b);
-});
+  const s=$("sidebar");
+  s.innerHTML="<h2>EVERY TAKİP</h2>";
+  SITES.forEach(x=>{
+    const b=document.createElement("div");
+    b.className="siteBtn"+(x===active?" active":"");
+    b.textContent=x;
+    b.onclick=()=>{active=x;renderSidebar();renderMain();};
+    s.appendChild(b);
+  });
 }
 
+/* ===== GENEL KONTROL ===== */
 function renderDashboard(data){
-let list=[];
-Object.entries(data).forEach(([site,val])=>{
-if(site.startsWith("_")||!val?.users)return;
-val.users.forEach(u=>{
-list.push({
-site,u,
-k:daysLeft(u.lastDeposit),
-got:u.lastFreeSpin===today()
-});
-});
-});
+  let list=[];
+  Object.entries(data).forEach(([site,val])=>{
+    if(site.startsWith("_")||!val?.users) return;
+    val.users.forEach(u=>{
+      const k=daysLeft(u.lastDeposit);
+      list.push({
+        site, u,
+        k,
+        got: u.lastFreeSpin===today()
+      });
+    });
+  });
 
-if(filter==="off")list=list.filter(x=>!x.got);
-if(filter==="on")list=list.filter(x=>x.got);
-if(filter==="dead")list=list.filter(x=>x.k!==null&&x.k<=0);
+  if(filter==="off") list=list.filter(x=>!x.got);
+  if(filter==="on") list=list.filter(x=>x.got);
+  if(filter==="dead") list=list.filter(x=>x.k!==null && x.k<=0);
 
-let html=`
-<h2>Genel Kontrol</h2>
-<div class="filters">
-<button onclick="filter='all';renderMain()" class="${filter==='all'?'active':''}">Tümü</button>
-<button onclick="filter='off';renderMain()" class="${filter==='off'?'active':''}">⚫ Alınmadı</button>
-<button onclick="filter='on';renderMain()" class="${filter==='on'?'active':''}">🟢 Alındı</button>
-<button onclick="filter='dead';renderMain()" class="${filter==='dead'?'active':''}">❌ Süre Doldu</button>
-</div>`;
+  let html=`
+    <h2>Genel Kontrol</h2>
+    <div class="filters">
+      <button onclick="filter='all';renderMain()" class="${filter==='all'?'active':''}">Tümü</button>
+      <button onclick="filter='off';renderMain()" class="${filter==='off'?'active':''}">⚫ Alınmadı</button>
+      <button onclick="filter='on';renderMain()" class="${filter==='on'?'active':''}">🟢 Alındı</button>
+      <button onclick="filter='dead';renderMain()" class="${filter==='dead'?'active':''}">❌ Süre Doldu</button>
+    </div>
+  `;
 
-list.forEach(x=>{
-html+=`
-<div class="card ${x.k!==null&&x.k<=1?'critical':''}">
-<div style="display:flex;gap:10px;align-items:center">
-<div class="dot ${x.got?'on':''}" onclick="toggleTaken('${x.site}','${x.u.username}')"></div>
-<div>
-<b>${x.u.username}</b> ${siteTag(x.site)}<br>
-<span class="${x.k>2?'green':x.k>0?'yellow':'red'}">
-${x.k===null?'Tarih yok':x.k>0?`${x.k} gün`:'Süre doldu'}
-</span>
-</div>
-</div>
-</div>`;
-});
+  list.forEach(x=>{
+    const st=statusText(x.k);
+    html+=`
+      <div class="card ${(x.k!==null && x.k<=1)?'critical':''}">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="dot ${x.got?'on':''}" onclick="toggleTaken('${x.site}','${escapeHtml(x.u.username)}')"></div>
+          <div style="flex:1">
+            <b>${escapeHtml(x.u.username)}</b> ${siteTag(x.site)}<br>
+            <span class="${st.cls}">${st.txt}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  });
 
-$("main").innerHTML=html;
+  html += renderLogsBlock(data, /*showSiteFilter*/ true);
+  $("main").innerHTML=html;
 }
 
+/* ===== SİTE EKRANI ===== */
 function renderSite(data){
-if(!data[active]) data[active]={users:[]};
+  if(!data[active]) data[active]={users:[]};
+  ensureLogs(data);
 
-let html=`<h2>${active}</h2>`;
+  let html=`<h2>${active}</h2>`;
 
-if(LINKS[active]){
-html+=`
-<div class="card">
-<b>Güncel Giriş</b>
-<div class="linkRow">
-<a href="${LINKS[active]}" target="_blank">🔗 Aç</a>
-<button onclick="navigator.clipboard.writeText('${LINKS[active]}');toast('Kopyalandı')">📋 Kopyala</button>
-</div>
-</div>`;
+  if(LINKS[active]){
+    html+=`
+      <div class="card">
+        <b>Güncel Giriş</b>
+        <div class="linkRow">
+          <a href="${LINKS[active]}" target="_blank">🔗 Aç</a>
+          <button onclick="navigator.clipboard.writeText('${LINKS[active]}');toast('Kopyalandı')">📋 Kopyala</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // kullanıcı ekle
+  html+=`
+    <div class="card">
+      <input id="u" class="inp" placeholder="Kullanıcı adı">
+      <button class="btn primary" onclick="addUser()">Kullanıcı Ekle</button>
+      <div class="small muted" style="margin-top:8px">
+        Not: Son ödeme tarihini kullanıcı kartından kaydedebilirsin.
+      </div>
+    </div>
+  `;
+
+  // kullanıcı kartları
+  data[active].users.forEach((u,i)=>{
+    const k=daysLeft(u.lastDeposit);
+    const st=statusText(k);
+
+    html+=`
+      <div class="card ${(k!==null && k<=1)?'critical':''}">
+        <div style="display:flex;justify-content:space-between;gap:10px;align-items:center">
+          <div>
+            <b>${escapeHtml(u.username)}</b> ${siteTag(active)}<br>
+            <span class="${st.cls}">${st.txt}</span>
+          </div>
+          <span class="pill">${u.lastFreeSpin===today() ? "Bugün alındı" : "Bugün alınmadı"}</span>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <input id="date_${i}" type="date" class="inp" value="${u.lastDeposit||""}">
+          <button class="btn soft" style="margin-top:0" onclick="saveDepositDate(${i})">💾 Ödeme Tarihini Kaydet</button>
+        </div>
+
+        <button class="btn primary" onclick="markTakenIdx(${i})">🎁 Freespin Alındı</button>
+        <button class="btn danger" onclick="delUser(${i})">🗑️ Sil</button>
+      </div>
+    `;
+  });
+
+  html += renderLogsBlock(data, /*showSiteFilter*/ false);
+  $("main").innerHTML=html;
 }
 
-html+=`
-<div class="card">
-<input id="u" placeholder="Kullanıcı adı" style="width:100%;padding:10px">
-<button class="btn primary" onclick="addUser()">Kullanıcı Ekle</button>
-</div>`;
+/* ===== LOG BLOĞU (ALTTA) ===== */
+function renderLogsBlock(data, showSiteFilter){
+  const logs=(data._logs||[]);
+  const scoped = showSiteFilter
+    ? logs
+    : logs.filter(x=>x.site===active);
 
-data[active].users.forEach((u,i)=>{
-const k=daysLeft(u.lastDeposit);
-html+=`
-<div class="card ${k!==null&&k<=1?'critical':''}">
-<b>${u.username}</b><br>
-<input type="date" value="${u.lastDeposit||""}" onchange="setDate(${i},this.value)">
-<button class="btn primary" onclick="markTakenIdx(${i})">Freespin Alındı</button>
-<button class="btn danger" onclick="delUser(${i})">Sil</button>
-</div>`;
-});
+  let html=`
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+        <div>
+          <b>LOG</b><br>
+          <span class="small muted">${showSiteFilter ? "Tüm siteler" : active + " (sadece bu site)"}</span>
+        </div>
+        <button class="btn danger" style="width:auto;margin-top:0;padding:8px 12px" onclick="clearLogs()">Temizle</button>
+      </div>
 
-$("main").innerHTML=html;
+      ${scoped.length===0 ? `<div class="logItem muted">Henüz kayıt yok.</div>` : ""}
+
+      ${scoped.slice(0,50).map(l=>`
+        <div class="logItem">
+          <div class="logTop">
+            <div><b>${escapeHtml(l.user||"-")}</b> ${siteTag(l.site||"")}</div>
+            <div class="muted small">${escapeHtml(l.ts||"")}</div>
+          </div>
+          <div class="small" style="margin-top:6px">
+            <span class="pill">${escapeHtml(l.site||"")}</span>
+            <span class="pill">${escapeHtml(l.action||"")}</span>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+  return html;
 }
 
-/* ===== MOBİL BUG FIXED ADD USER ===== */
+/* ===== ACTIONS ===== */
 function addUser(){
-const v=$("u").value.trim();
-if(!v) return;
+  const v=$("u")?.value?.trim();
+  if(!v) return;
 
-const d=load();
-if(!d[active]) d[active]={users:[]};
+  const d=load();
+  if(!d[active]) d[active]={users:[]};
 
-d[active].users.push({
-username:v,
-lastDeposit:null,
-lastFreeSpin:null
-});
+  // aynı kullanıcı varsa ekleme
+  if(d[active].users.some(x=>x.username.toLowerCase()===v.toLowerCase())){
+    toast("Bu kullanıcı zaten var");
+    return;
+  }
 
-save(d);
-$("u").value="";
-renderMain();
-toast("Eklendi");
+  d[active].users.push({
+    username:v,
+    lastDeposit:null,
+    lastFreeSpin:null
+  });
+
+  ensureLogs(d);
+  save(d);
+  $("u").value="";
+  renderMain();
+  toast("Eklendi");
 }
 
-function setDate(i,v){
-const d=load();
-d[active].users[i].lastDeposit=v;
-save(d);renderMain();
+function saveDepositDate(i){
+  const inp=$("date_"+i);
+  const v=inp ? inp.value : "";
+  if(!v){
+    toast("Tarih seç");
+    return;
+  }
+  const d=load();
+  d[active].users[i].lastDeposit=v;
+  ensureLogs(d);
+  save(d);
+
+  const k=daysLeft(v);
+  const st=statusText(k);
+  toast("Ödeme tarihi kaydedildi");
+  renderMain();
 }
 
 function markTakenIdx(i){
-const d=load();
-d[active].users[i].lastFreeSpin=today();
-save(d);renderMain();
+  const d=load();
+  const u=d[active].users[i];
+  u.lastFreeSpin=today();
+  ensureLogs(d);
+  save(d);
+
+  // log
+  addLog(active, u.username, "Freespin alındı");
+  renderMain();
+  toast("Kaydedildi");
 }
 
 function toggleTaken(site,user){
-const d=load();
-const u=d[site].users.find(x=>x.username===user);
-u.lastFreeSpin=u.lastFreeSpin===today()?null:today();
-save(d);renderMain();
+  const d=load();
+  if(!d[site] || !d[site].users) return;
+
+  const u=d[site].users.find(x=>x.username===user);
+  if(!u) return;
+
+  const was=u.lastFreeSpin===today();
+  u.lastFreeSpin = was ? null : today();
+  ensureLogs(d);
+  save(d);
+
+  // sadece ON yapınca log yaz
+  if(!was) addLog(site, u.username, "Freespin alındı (Genel Kontrol)");
+
+  renderMain();
 }
 
 function delUser(i){
-if(!confirm("Silinsin mi?"))return;
-const d=load();
-d[active].users.splice(i,1);
-save(d);renderMain();
+  if(!confirm("Silinsin mi?"))return;
+  const d=load();
+  const u=d[active].users[i];
+  d[active].users.splice(i,1);
+  ensureLogs(d);
+  save(d);
+  addLog(active, u?.username || "-", "Kullanıcı silindi");
+  renderMain();
+  toast("Silindi");
+}
+
+/* ===== HELPERS ===== */
+function escapeHtml(s){
+  return String(s)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 }
 
 function renderMain(){
-dailyReset();
-const d=load();
-active==="Genel Kontrol"?renderDashboard(d):renderSite(d);
+  dailyReset();
+  const d=load();
+  ensureLogs(d);
+  active==="Genel Kontrol" ? renderDashboard(d) : renderSite(d);
 }
 
 renderSidebar();
