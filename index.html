@@ -1,540 +1,319 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Every Takip Paneli PRO</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promosyon Kontrol Paneli</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --border-color: #30363d;
+            --text-gold: #ffcc00;
+            --text-white: #c9d1d9;
+            --green-led: #00ff00;
+            --gray-led: #484f58;
+            --red-delete: #da3633;
+        }
 
-<style>
-*{box-sizing:border-box}
-body{
-  margin:0;font-family:Segoe UI,Arial;
-  background:#0b1220;color:#e5e7eb;
-  display:flex;height:100vh;overflow:hidden
-}
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-white);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            margin: 0; padding: 10px;
+            display: flex; flex-direction: column; align-items: center;
+        }
 
-/* SIDEBAR */
-.sidebar{
-  width:230px;background:#020617;padding:12px;
-  border-right:1px solid #1e293b;overflow:auto
-}
-.sidebar h2{
-  text-align:center;color:#facc15;margin:0 0 12px
-}
-.siteBtn{
-  padding:10px;margin-bottom:6px;border-radius:8px;
-  cursor:pointer;background:#020617;border:1px solid #020617;
-  white-space:nowrap
-}
-.siteBtn:hover{border-color:#facc15}
-.siteBtn.active{
-  background:#111827;border-color:#facc15;color:#facc15
-}
+        .container { width: 100%; max-width: 500px; }
+        h2 { color: white; margin-bottom: 15px; text-align: left; font-size: 1.4rem; }
 
-/* MAIN */
-.main{flex:1;padding:15px;overflow:auto}
+        .add-user-section {
+            background: var(--card-bg);
+            padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);
+            margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px;
+        }
 
-/* CARD */
-.card{
-  background:#020617;padding:12px;border-radius:12px;
-  margin-bottom:10px;border:1px solid #1e293b
-}
-.card.critical{
-  border-color:#ef4444;
-  box-shadow:0 0 10px rgba(239,68,68,.25)
-}
+        @media (min-width: 400px) {
+            .add-user-section { flex-direction: row; }
+            .add-user-section select { flex: 1; }
+            .add-user-section input { flex: 2; }
+        }
 
-/* DOT */
-.dot{
-  width:14px;height:14px;border-radius:50%;
-  background:#334155;cursor:pointer;flex:0 0 auto
-}
-.dot.on{
-  background:#22c55e;
-  box-shadow:0 0 8px rgba(34,197,94,.8)
-}
+        select, input, button {
+            background: #0d1117; border: 1px solid var(--border-color);
+            color: white; padding: 10px; border-radius: 6px; outline: none; font-size: 0.9rem;
+        }
 
-/* BUTTON */
-.btn{
-  width:100%;padding:8px;border:none;border-radius:8px;
-  margin-top:6px;cursor:pointer;font-weight:700
-}
-.primary{background:#16a34a;color:#fff}
-.danger{background:#ef4444;color:#fff}
-.soft{background:#111827;color:#e5e7eb;border:1px solid #1e293b}
+        .btn-add { background: #238636; cursor: pointer; border: none; font-weight: bold; }
+        .btn-add:hover { background: #2ea043; }
 
-/* STATUS */
-.green{color:#22c55e}
-.yellow{color:#facc15}
-.red{color:#ef4444}
-.muted{color:#94a3b8}
+        .site-card {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 10px; padding: 12px; margin-bottom: 15px;
+        }
 
-/* SITE BADGE */
-.siteTagImg{
-  display:inline-block;
-  width:83px;height:24px;
-  border-radius:8px;
-  background-size:contain;
-  background-position:center;
-  background-repeat:no-repeat;
-  border:1px solid #1e293b;
-  background-color:#020617;
-  vertical-align:middle;
-  margin-left:6px;
-}
+        .site-header { display: flex; align-items: center; margin-bottom: 12px; height: 28px; }
+        .site-header-logo { height: 100%; max-width: 110px; object-fit: contain; }
 
-/* LINK */
-.linkRow{display:flex;gap:6px}
-.linkRow a,.linkRow button{
-  flex:1;padding:6px;border-radius:6px;
-  border:1px solid #1e293b;
-  background:#020617;color:#22c55e;
-  cursor:pointer;text-align:center;
-  text-decoration:none;font-weight:700
-}
+        .user-row {
+            background: #0d1117; border: 1px solid var(--border-color);
+            border-radius: 8px; padding: 10px; display: flex;
+            justify-content: space-between; align-items: center; margin-top: 6px;
+        }
 
-/* FILTER */
-.filters button{
-  margin-right:6px;padding:6px 10px;border-radius:6px;
-  border:1px solid #1e293b;background:#020617;color:#fff;
-  cursor:pointer
-}
-.filters button.active{
-  border-color:#facc15;color:#facc15
-}
+        .user-info { display: flex; align-items: center; gap: 8px; flex: 1; }
+        .user-name { font-weight: 500; font-size: 0.95rem; color: #e6edf3; }
 
-/* INPUTS */
-.inp{
-  width:100%;padding:10px;border-radius:10px;
-  border:1px solid #1e293b;background:#0b1220;color:#e5e7eb;
-  outline:none
-}
-.row{display:flex;gap:8px;align-items:center}
-.row > *{flex:1}
-.small{font-size:12px}
+        .btn-delete {
+            background: transparent; border: 1px solid #30363d; color: #8b949e;
+            padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;
+            transition: 0.2s;
+        }
+        .btn-delete:hover { background: var(--red-delete); color: white; border-color: var(--red-delete); }
 
-/* LOG */
-.logItem{
-  padding:10px;border-radius:10px;border:1px solid #1e293b;
-  background:#0b1220;margin-top:8px
-}
-.logTop{display:flex;justify-content:space-between;gap:10px}
-.pill{
-  display:inline-block;padding:2px 8px;border-radius:999px;
-  border:1px solid #1e293b;background:#020617;
-  font-size:12px;color:#cbd5e1
-}
+        .led-container { display: flex; gap: 10px; align-items: center; }
+        .led {
+            width: 28px; height: 28px; border-radius: 50%;
+            border: 2px solid #000; transition: all 0.3s ease; cursor: pointer;
+        }
 
-/* TOAST */
-.toast{
-  position:fixed;top:20px;right:20px;
-  background:#facc15;color:#000;
-  padding:10px 14px;border-radius:10px;
-  font-weight:800;opacity:0;transition:.3s;
-  z-index:999
-}
-.toast.show{opacity:1}
+        .led-status-gray { background-color: var(--gray-led); box-shadow: inset 0 0 5px #000; }
+        .led-status-green { 
+            background-color: var(--green-led); 
+            box-shadow: 0 0 10px var(--green-led), inset 0 0 5px #fff; 
+        }
 
-/* ===== MOBİL ===== */
-@media (max-width:768px){
-  body{flex-direction:column;height:auto;overflow:auto}
-  .sidebar{
-    width:100%;display:flex;gap:6px;
-    overflow-x:auto;border-right:none;
-    border-bottom:1px solid #1e293b
-  }
-  .sidebar h2{display:none}
-  .siteBtn{flex:0 0 auto;padding:8px 12px;font-size:14px}
-  .main{padding:10px}
-  .btn{padding:12px;font-size:15px}
-  .dot{width:18px;height:18px}
-  .linkRow{flex-direction:column}
-  .filters button{width:100%;margin-bottom:6px}
-  .toast{right:50%;transform:translateX(50%)}
-  .row{flex-direction:column;align-items:stretch}
-}
-</style>
+        .log-section {
+            margin-top: 20px; background: var(--card-bg);
+            border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; width: 100%;
+        }
+        .log-header { color: var(--text-gold); font-weight: bold; margin-bottom: 8px; font-size: 0.85rem; }
+        .log-list {
+            background: #0d1117; border: 1px dotted var(--border-color);
+            padding: 5px; font-size: 0.75rem; max-height: 200px; overflow-y: auto; border-radius: 5px;
+        }
+        .log-item { display: flex; align-items: center; padding: 6px 4px; border-bottom: 1px solid #21262d; color: #8b949e; }
+        .log-date { color: #6e7681; font-size: 0.65rem; min-width: 70px; }
+        .site-badge { background: #30363d; padding: 1px 5px; border-radius: 3px; margin-right: 5px; font-size: 0.65rem; }
+        .action-text { color: #7ee787; margin-left: auto; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); display: none; justify-content: center; align-items: center; z-index: 9999;
+        }
+        .modal-content {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 20px; width: 85%; max-width: 320px; text-align: center;
+        }
+        .modal-buttons { display: flex; gap: 10px; margin-top: 20px; }
+        .modal-btn { flex: 1; padding: 10px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; }
+    </style>
 </head>
-
 <body>
-<div class="sidebar" id="sidebar"></div>
-<div class="main" id="main"></div>
-<div class="toast" id="toast"></div>
+
+<div class="container">
+    <h2>Genel Kontrol</h2>
+
+    <div class="add-user-section">
+        <select id="siteSelect">
+            <option value="KAVBET">KAVBET</option>
+            <option value="EGEBET">EGEBET</option>
+            <option value="LUNABET">LUNABET</option>
+            <option value="MATBET">MATBET</option>
+            <option value="MAVIBET">MAVIBET</option>
+            <option value="MEGABAHIS">MEGABAHIS</option>
+            <option value="NAKITBAHIS">NAKITBAHIS</option>
+            <option value="ODEONBET">ODEONBET</option>
+            <option value="PUSULABET">PUSULABET</option>
+            <option value="JOJOBET">JOJOBET</option>
+        </select>
+        <input type="text" id="usernameInput" placeholder="Kullanıcı Adı">
+        <button class="btn-add" onclick="addUser()">EKLE</button>
+    </div>
+
+    <div id="contentArea"></div>
+
+    <div class="log-section">
+        <div class="log-header">PROMOSYON LOGLARI</div>
+        <div class="log-list" id="logList"></div>
+    </div>
+</div>
+
+<div id="confirmModal" class="modal-overlay">
+    <div class="modal-content">
+        <div style="color:var(--text-gold); font-weight:bold; margin-bottom:10px;">ONAY</div>
+        <div id="modalMessage" style="font-size: 0.9rem;"></div>
+        <div class="modal-buttons">
+            <button class="modal-btn" style="background:#da3633; color:white;" id="confirmBtn">EVET</button>
+            <button class="modal-btn" style="background:#30363d; color:white;" onclick="closeModal()">İPTAL</button>
+        </div>
+    </div>
+</div>
 
 <script>
-const SITES=[
-  "Genel Kontrol",
-  "Kavbet","Odeonbet","Jojobet","Mavibet",
-  "Nakitbahis","Megabahis","Matbet","Pusulabet","Egebet"
-];
+    const siteLogos = {
+        'KAVBET': 'https://github.com/trmaxturk/every-takip/blob/main/badges/kavbet.png?raw=true',
+        'EGEBET': 'https://github.com/trmaxturk/every-takip/blob/main/badges/egebet.png?raw=true',
+        'LUNABET': 'https://github.com/trmaxturk/every-takip/blob/main/badges/lunabet.png?raw=true',
+        'MATBET': 'https://github.com/trmaxturk/every-takip/blob/main/badges/matbet.png?raw=true',
+        'MAVIBET': 'https://github.com/trmaxturk/every-takip/blob/main/badges/mavibet.png?raw=true',
+        'MEGABAHIS': 'https://github.com/trmaxturk/every-takip/blob/main/badges/megabahis.png?raw=true',
+        'NAKITBAHIS': 'https://github.com/trmaxturk/every-takip/blob/main/badges/nakitbahis.png?raw=true',
+        'ODEONBET': 'https://github.com/trmaxturk/every-takip/blob/main/badges/odeonbet.png?raw=true',
+        'PUSULABET': 'https://github.com/trmaxturk/every-takip/blob/main/badges/pusulabet.png?raw=true',
+        'JOJOBET': 'https://github.com/trmaxturk/every-takip/blob/main/badges/bobobet.png?raw=true'
+    };
 
-const LINKS={
-  "Kavbet":"https://shoort.in/kavbet",
-  "Odeonbet":"http://dub.is/odeonguncel",
-  "Jojobet":"http://dub.pro/jojoyagit",
-  "Mavibet":"http://dub.is/maviguncel",
-  "Nakitbahis":"https://shoort.in/nakitbahis",
-  "Megabahis":"https://dub.is/megaguncel",
-  "Matbet":"http://dub.is/matguncel",
-  "Pusulabet":"https://shoort.in/pusulabet",
-  "Egebet":"https://shoort.in/egebet"
-};
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+    let logs = JSON.parse(localStorage.getItem('logs')) || [];
 
-const SITE_BADGES={
-  "Jojobet":"badges/bobobet.png",
-  "Egebet":"badges/egebet.png",
-  "Kavbet":"badges/kavbet.png",
-  "Matbet":"badges/matbet.png",
-  "Mavibet":"badges/mavibet.png",
-  "Megabahis":"badges/megabahis.png",
-  "Nakitbahis":"badges/nakitbahis.png",
-  "Odeonbet":"badges/odeonbet.png",
-  "Pusulabet":"badges/pusulabet.png"
-};
+    // TEMİZLİK MOTORU: İstediğin kullanıcıları zorla siler
+    function forceCleanup() {
+        const initialCount = users.length;
+        users = users.filter(u => {
+            const isKavbetTarget = (u.site === "KAVBET" && u.username.toLowerCase() === "trmaxturk");
+            const isOdeonTarget = (u.site === "ODEONBET" && u.username.toLowerCase() === "maxbaba");
+            return !isKavbetTarget && !isOdeonTarget;
+        });
+        
+        if (users.length !== initialCount) {
+            saveData();
+        }
+    }
 
-let active="Genel Kontrol";
-let filter="all";
-const KEY="everyTakip_v2";
+    window.onload = () => { 
+        forceCleanup(); // Önce temizle
+        renderUI(); 
+        renderLogs(); 
+    };
 
-const $=id=>document.getElementById(id);
-const load=()=>JSON.parse(localStorage.getItem(KEY))||{};
-const save=d=>localStorage.setItem(KEY,JSON.stringify(d));
+    function saveData() {
+        localStorage.setItem('users', JSON.stringify(users));
+        localStorage.setItem('logs', JSON.stringify(logs));
+    }
 
-const today=()=>new Date().toISOString().slice(0,10);
-const nowStr=()=>new Date().toLocaleString("tr-TR");
+    function addUser() {
+        const site = document.getElementById('siteSelect').value;
+        const username = document.getElementById('usernameInput').value.trim();
+        if (!username) return;
 
-function toast(m){
-  const t=$("toast");
-  t.textContent=m;
-  t.classList.add("show");
-  setTimeout(()=>t.classList.remove("show"),1500);
-}
+        if (users.find(u => u.site === site && u.username.toLowerCase() === username.toLowerCase())) {
+            alert('Bu kullanıcı zaten ekli!'); return;
+        }
 
-function siteTag(site){
-  const img=SITE_BADGES[site];
-  return img?`<span class="siteTagImg" style="background-image:url('${img}')"></span>`:"";
-}
+        users.push({ id: 'u' + Date.now(), site, username, lastClaimDate: null });
+        saveData();
+        renderUI();
+        document.getElementById('usernameInput').value = '';
+    }
 
-/* ===== 7 GÜN HESABI =====
-   Son ödeme tarihinden itibaren 7 gün kod alınabilir.
-   daysLeft: 0 => bugün son gün, -1 => süre doldu (dün bitti) gibi.
-*/
-function daysLeft(depositDate){
-  if(!depositDate) return null;
-  const start=new Date(depositDate);
-  const diff=Math.floor((new Date() - start)/86400000); // geçen gün
-  return 7 - diff; // 7,6,5..0,-1...
-}
-function statusText(k){
-  if(k===null) return {txt:"Son ödeme tarihi girilmedi", cls:"muted"};
-  if(k>0) return {txt:`Kod alabilirsin: ${k} gün kaldı`, cls: (k>2?"green":"yellow")};
-  if(k===0) return {txt:"BUGÜN son gün!", cls:"red"};
-  return {txt:"Süre doldu (7 gün geçti)", cls:"red"};
-}
+    function deleteUser(userId) {
+        const user = users.find(u => u.id === userId);
+        if (!user) return;
+        showModal(`${user.username} silinsin mi?`, () => {
+            users = users.filter(u => u.id !== userId);
+            saveData();
+            renderUI();
+            closeModal();
+        });
+    }
 
-/* ===== FIXED DAILY RESET ===== */
-function dailyReset(){
-  const d=load();
-  const h=new Date().getHours();
-  const t=today();
-  if(!d._reset) d._reset=t;
+    function handleClaim(userId) {
+        const index = users.findIndex(u => u.id === userId);
+        if (index === -1) return;
+        const today = new Date().toLocaleDateString('tr-TR');
+        const user = users[index];
 
-  // 03:00 sonrası yeni gün -> tüm lastFreeSpin sıfır
-  if(h>=3 && d._reset!==t){
-    Object.values(d).forEach(s=>{
-      if(s?.users) s.users.forEach(u=>u.lastFreeSpin=null);
-    });
-    d._reset=t;
-    save(d);
-  }
-}
+        if (user.lastClaimDate === today) {
+            showModal("Durumu sıfırlamak istiyor musunuz?", () => {
+                users[index].lastClaimDate = null;
+                logs = logs.filter(l => !(l.userId === userId && l.date === today));
+                saveData();
+                renderUI();
+                renderLogs();
+                closeModal();
+            });
+            return;
+        }
 
-/* ===== LOGS ===== */
-function ensureLogs(d){
-  if(!d._logs) d._logs=[]; // {ts, site, user, action}
-  return d;
-}
-function addLog(site, user, action){
-  const d=ensureLogs(load());
-  d._logs.unshift({ts: nowStr(), site, user, action});
-  // log şişmesin diye max 200 kayıt
-  if(d._logs.length>200) d._logs.length=200;
-  save(d);
-}
-function clearLogs(){
-  if(!confirm("Tüm log temizlensin mi?")) return;
-  const d=load();
-  d._logs=[];
-  save(d);
-  renderMain();
-  toast("Log temizlendi");
-}
+        users[index].lastClaimDate = today;
+        const now = new Date();
+        logs.unshift({
+            userId, site: user.site, username: user.username,
+            timestamp: now.toLocaleDateString('tr-TR') + " " + now.toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}),
+            action: "promokod alındı", date: today, type: "claim"
+        });
+        saveData();
+        renderUI();
+        renderLogs();
+    }
 
-/* ===== UI ===== */
-function renderSidebar(){
-  const s=$("sidebar");
-  s.innerHTML="<h2>EVERY TAKİP</h2>";
-  SITES.forEach(x=>{
-    const b=document.createElement("div");
-    b.className="siteBtn"+(x===active?" active":"");
-    b.textContent=x;
-    b.onclick=()=>{active=x;renderSidebar();renderMain();};
-    s.appendChild(b);
-  });
-}
+    function renderUI() {
+        const contentArea = document.getElementById('contentArea');
+        contentArea.innerHTML = '';
+        const today = new Date().toLocaleDateString('tr-TR');
+        
+        const grouped = users.reduce((acc, u) => {
+            if (!acc[u.site]) acc[u.site] = [];
+            acc[u.site].push(u);
+            return acc;
+        }, {});
 
-/* ===== GENEL KONTROL ===== */
-function renderDashboard(data){
-  let list=[];
-  Object.entries(data).forEach(([site,val])=>{
-    if(site.startsWith("_")||!val?.users) return;
-    val.users.forEach(u=>{
-      const k=daysLeft(u.lastDeposit);
-      list.push({
-        site, u,
-        k,
-        got: u.lastFreeSpin===today()
-      });
-    });
-  });
+        const sortedSites = Object.keys(grouped).sort();
+        if (sortedSites.length === 0) {
+            contentArea.innerHTML = '<div style="text-align:center; padding:30px; color:#8b949e; background:var(--card-bg); border-radius:10px;">Liste şu an boş. Kullanıcı ekleyerek başlayın.</div>';
+            return;
+        }
 
-  if(filter==="off") list=list.filter(x=>!x.got);
-  if(filter==="on") list=list.filter(x=>x.got);
-  if(filter==="dead") list=list.filter(x=>x.k!==null && x.k<=0);
+        sortedSites.forEach(site => {
+            let siteHTML = `<div class="site-card">
+                <div class="site-header">
+                    ${siteLogos[site] ? `<img src="${siteLogos[site]}" class="site-header-logo">` : `<span>${site}</span>`}
+                </div>`;
+            
+            grouped[site].sort((a,b) => a.username.localeCompare(b.username)).forEach(u => {
+                const isClaimed = u.lastClaimDate === today;
+                siteHTML += `
+                    <div class="user-row">
+                        <div class="user-info">
+                            <span class="user-name">${u.username}</span>
+                            <button class="btn-delete" onclick="deleteUser('${u.id}')">Sil</button>
+                        </div>
+                        <div class="led-container">
+                            <div class="led ${isClaimed ? 'led-status-green' : 'led-status-gray'}" onclick="handleClaim('${u.id}')"></div>
+                        </div>
+                    </div>`;
+            });
+            siteHTML += `</div>`;
+            contentArea.innerHTML += siteHTML;
+        });
+    }
 
-  let html=`
-    <h2>Genel Kontrol</h2>
-    <div class="filters">
-      <button onclick="filter='all';renderMain()" class="${filter==='all'?'active':''}">Tümü</button>
-      <button onclick="filter='off';renderMain()" class="${filter==='off'?'active':''}">⚫ Alınmadı</button>
-      <button onclick="filter='on';renderMain()" class="${filter==='on'?'active':''}">🟢 Alındı</button>
-      <button onclick="filter='dead';renderMain()" class="${filter==='dead'?'active':''}">❌ Süre Doldu</button>
-    </div>
-  `;
+    function renderLogs() {
+        const logList = document.getElementById('logList');
+        const displayLogs = logs.filter(l => l.type === "claim").slice(0, 50); 
+        if (displayLogs.length === 0) {
+            logList.innerHTML = '<div style="text-align:center; padding:10px; color:#6e7681;">Log kaydı yok.</div>';
+            return;
+        }
+        logList.innerHTML = displayLogs.map(l => `
+            <div class="log-item">
+                <span class="log-date">${l.timestamp}</span>
+                <span class="site-badge">${l.site}</span>
+                <span style="color:#e6edf3;">${l.username}</span>
+                <span class="action-text">✓</span>
+            </div>
+        `).join('');
+    }
 
-  list.forEach(x=>{
-    const st=statusText(x.k);
-    html+=`
-      <div class="card ${(x.k!==null && x.k<=1)?'critical':''}">
-        <div style="display:flex;gap:10px;align-items:center">
-          <div class="dot ${x.got?'on':''}" onclick="toggleTaken('${x.site}','${escapeHtml(x.u.username)}')"></div>
-          <div style="flex:1">
-            <b>${escapeHtml(x.u.username)}</b> ${siteTag(x.site)}<br>
-            <span class="${st.cls}">${st.txt}</span>
-          </div>
-        </div>
-      </div>
-    `;
-  });
+    function showModal(msg, onConfirm) {
+        document.getElementById('modalMessage').innerText = msg;
+        document.getElementById('confirmModal').style.display = 'flex';
+        document.getElementById('confirmBtn').onclick = onConfirm;
+    }
 
-  html += renderLogsBlock(data, /*showSiteFilter*/ true);
-  $("main").innerHTML=html;
-}
-
-/* ===== SİTE EKRANI ===== */
-function renderSite(data){
-  if(!data[active]) data[active]={users:[]};
-  ensureLogs(data);
-
-  let html=`<h2>${active}</h2>`;
-
-  if(LINKS[active]){
-    html+=`
-      <div class="card">
-        <b>Güncel Giriş</b>
-        <div class="linkRow">
-          <a href="${LINKS[active]}" target="_blank">🔗 Aç</a>
-          <button onclick="navigator.clipboard.writeText('${LINKS[active]}');toast('Kopyalandı')">📋 Kopyala</button>
-        </div>
-      </div>
-    `;
-  }
-
-  // kullanıcı ekle
-  html+=`
-    <div class="card">
-      <input id="u" class="inp" placeholder="Kullanıcı adı">
-      <button class="btn primary" onclick="addUser()">Kullanıcı Ekle</button>
-      <div class="small muted" style="margin-top:8px">
-        Not: Son ödeme tarihini kullanıcı kartından kaydedebilirsin.
-      </div>
-    </div>
-  `;
-
-  // kullanıcı kartları
-  data[active].users.forEach((u,i)=>{
-    const k=daysLeft(u.lastDeposit);
-    const st=statusText(k);
-
-    html+=`
-      <div class="card ${(k!==null && k<=1)?'critical':''}">
-        <div style="display:flex;justify-content:space-between;gap:10px;align-items:center">
-          <div>
-            <b>${escapeHtml(u.username)}</b> ${siteTag(active)}<br>
-            <span class="${st.cls}">${st.txt}</span>
-          </div>
-          <span class="pill">${u.lastFreeSpin===today() ? "Bugün alındı" : "Bugün alınmadı"}</span>
-        </div>
-
-        <div class="row" style="margin-top:10px">
-          <input id="date_${i}" type="date" class="inp" value="${u.lastDeposit||""}">
-          <button class="btn soft" style="margin-top:0" onclick="saveDepositDate(${i})">💾 Ödeme Tarihini Kaydet</button>
-        </div>
-
-        <button class="btn primary" onclick="markTakenIdx(${i})">🎁 Freespin Alındı</button>
-        <button class="btn danger" onclick="delUser(${i})">🗑️ Sil</button>
-      </div>
-    `;
-  });
-
-  html += renderLogsBlock(data, /*showSiteFilter*/ false);
-  $("main").innerHTML=html;
-}
-
-/* ===== LOG BLOĞU (ALTTA) ===== */
-function renderLogsBlock(data, showSiteFilter){
-  const logs=(data._logs||[]);
-  const scoped = showSiteFilter
-    ? logs
-    : logs.filter(x=>x.site===active);
-
-  let html=`
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-        <div>
-          <b>LOG</b><br>
-          <span class="small muted">${showSiteFilter ? "Tüm siteler" : active + " (sadece bu site)"}</span>
-        </div>
-        <button class="btn danger" style="width:auto;margin-top:0;padding:8px 12px" onclick="clearLogs()">Temizle</button>
-      </div>
-
-      ${scoped.length===0 ? `<div class="logItem muted">Henüz kayıt yok.</div>` : ""}
-
-      ${scoped.slice(0,50).map(l=>`
-        <div class="logItem">
-          <div class="logTop">
-            <div><b>${escapeHtml(l.user||"-")}</b> ${siteTag(l.site||"")}</div>
-            <div class="muted small">${escapeHtml(l.ts||"")}</div>
-          </div>
-          <div class="small" style="margin-top:6px">
-            <span class="pill">${escapeHtml(l.site||"")}</span>
-            <span class="pill">${escapeHtml(l.action||"")}</span>
-          </div>
-        </div>
-      `).join("")}
-    </div>
-  `;
-  return html;
-}
-
-/* ===== ACTIONS ===== */
-function addUser(){
-  const v=$("u")?.value?.trim();
-  if(!v) return;
-
-  const d=load();
-  if(!d[active]) d[active]={users:[]};
-
-  // aynı kullanıcı varsa ekleme
-  if(d[active].users.some(x=>x.username.toLowerCase()===v.toLowerCase())){
-    toast("Bu kullanıcı zaten var");
-    return;
-  }
-
-  d[active].users.push({
-    username:v,
-    lastDeposit:null,
-    lastFreeSpin:null
-  });
-
-  ensureLogs(d);
-  save(d);
-  $("u").value="";
-  renderMain();
-  toast("Eklendi");
-}
-
-function saveDepositDate(i){
-  const inp=$("date_"+i);
-  const v=inp ? inp.value : "";
-  if(!v){
-    toast("Tarih seç");
-    return;
-  }
-  const d=load();
-  d[active].users[i].lastDeposit=v;
-  ensureLogs(d);
-  save(d);
-
-  const k=daysLeft(v);
-  const st=statusText(k);
-  toast("Ödeme tarihi kaydedildi");
-  renderMain();
-}
-
-function markTakenIdx(i){
-  const d=load();
-  const u=d[active].users[i];
-  u.lastFreeSpin=today();
-  ensureLogs(d);
-  save(d);
-
-  // log
-  addLog(active, u.username, "Freespin alındı");
-  renderMain();
-  toast("Kaydedildi");
-}
-
-function toggleTaken(site,user){
-  const d=load();
-  if(!d[site] || !d[site].users) return;
-
-  const u=d[site].users.find(x=>x.username===user);
-  if(!u) return;
-
-  const was=u.lastFreeSpin===today();
-  u.lastFreeSpin = was ? null : today();
-  ensureLogs(d);
-  save(d);
-
-  // sadece ON yapınca log yaz
-  if(!was) addLog(site, u.username, "Freespin alındı (Genel Kontrol)");
-
-  renderMain();
-}
-
-function delUser(i){
-  if(!confirm("Silinsin mi?"))return;
-  const d=load();
-  const u=d[active].users[i];
-  d[active].users.splice(i,1);
-  ensureLogs(d);
-  save(d);
-  addLog(active, u?.username || "-", "Kullanıcı silindi");
-  renderMain();
-  toast("Silindi");
-}
-
-/* ===== HELPERS ===== */
-function escapeHtml(s){
-  return String(s)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
-function renderMain(){
-  dailyReset();
-  const d=load();
-  ensureLogs(d);
-  active==="Genel Kontrol" ? renderDashboard(d) : renderSite(d);
-}
-
-renderSidebar();
-renderMain();
-setInterval(dailyReset,60000);
+    function closeModal() { document.getElementById('confirmModal').style.display = 'none'; }
 </script>
+
 </body>
 </html>
