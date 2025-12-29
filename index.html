@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Promosyon Kontrol Paneli</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --bg-color: #0d1117;
@@ -163,9 +164,6 @@
         'PUSULABET': 'https://github.com/trmaxturk/every-takip/blob/main/badges/pusulabet.png?raw=true',
         'JOJOBET': 'https://github.com/trmaxturk/every-takip/blob/main/badges/bobobet.png?raw=true'
     };
-
-    let users = JSON.parse(localStorage.getItem('users')) || [];
-    let logs = JSON.parse(localStorage.getItem('logs')) || [];
 
     // TEMİZLİK MOTORU: İstediğin kullanıcıları zorla siler
     function forceCleanup() {
