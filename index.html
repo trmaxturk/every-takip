@@ -2,8 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VIP Promosyon Yönetim Paneli</title>
+    <title>VIP Yönetim Paneli - Premium Tasarım</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -11,83 +10,93 @@
     
     <style>
         :root { 
-            --bg-color: #f8fafc; --card-bg: #ffffff; --gray-led: #cbd5e1; 
-            --green-led: #22c55e; --blue: #3b82f6; --warn: #f59e0b; --user-text: #1e293b; 
+            --bg-color: #f8fafc; 
+            --card-bg: #ffffff; 
+            --gray-led: #cbd5e1; 
+            --green-led: #22c55e; 
+            --blue: #3b82f6; 
+            --warn: #f59e0b; 
+            --user-text: #1e293b; /* Kullanıcı adı için derin grafit rengi */
         }
 
         body { 
-            font-family: 'Inter', sans-serif; background-color: var(--bg-color); 
-            padding: 10px; margin: 0; color: #334155; -webkit-tap-highlight-color: transparent;
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-color); 
+            padding: 20px; 
+            color: #334155;
         }
 
-        .container { max-width: 900px; margin: 0 auto; padding-bottom: 50px; }
+        .container { max-width: 900px; margin: 0 auto; }
 
-        h2 { text-align: center; font-weight: 700; color: #0f172a; margin: 20px 0; font-size: 1.5rem; }
-
+        /* Site Başlıkları */
         .site-item { 
-            background: var(--card-bg); border: 1px solid #e2e8f0; 
-            margin-bottom: 8px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            background: var(--card-bg); 
+            border: 1px solid #e2e8f0; 
+            margin-bottom: 8px; 
+            border-radius: 12px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            transition: all 0.2s;
         }
-
         .site-header { padding: 16px; display: flex; justify-content: space-between; font-weight: 700; align-items: center; cursor: pointer; }
 
-        .site-content { display: none; padding: 10px; border-top: 1px solid #f1f5f9; background: #fcfcfd; }
+        .site-content { display: none; padding: 15px; border-top: 1px solid #f1f5f9; background: #fcfcfd; }
         
+        /* Kullanıcı Satırı Tasarımı */
         .user-row { 
-            display: flex; align-items: center; justify-content: space-between; 
-            padding: 12px 5px; border-bottom: 1px solid #f1f5f9; gap: 10px; flex-wrap: wrap;
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 12px 0; 
+            border-bottom: 1px solid #f1f5f9; 
+            gap: 12px; 
         }
 
-        .user-info-box { display: flex; align-items: center; flex: 1; min-width: 200px; }
-
+        /* ÖZEL KULLANICI ADI STİLİ */
         .user-name-style { 
-            font-weight: 600; font-size: 15px; color: var(--user-text); 
-            letter-spacing: -0.01em; margin-right: 8px; white-space: nowrap;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600; 
+            font-size: 15px; 
+            color: var(--user-text); 
+            letter-spacing: -0.01em; /* Daha modern bir görünüm için hafif daraltma */
+            margin-right: 5px;
         }
         
-        .led { width: 18px; height: 18px; border-radius: 50%; background: var(--gray-led); cursor: pointer; flex-shrink: 0; }
-        .led.active { background: var(--green-led); box-shadow: 0 0 12px rgba(34, 197, 94, 0.5); }
+        .led { width: 14px; height: 14px; border-radius: 50%; background: var(--gray-led); cursor: pointer; flex-shrink: 0; }
+        .led.active { background: var(--green-led); box-shadow: 0 0 12px rgba(34, 197, 94, 0.5); cursor: default; }
         
-        .promo-text { color: var(--green-led); font-weight: 700; font-size: 12px; display: block; margin-top: 2px; }
-        .days-left { color: var(--warn); font-size: 11px; font-weight: 600; display: block; }
-        .time-text { font-size: 10px; color: #94a3b8; font-weight: 400; }
+        .promo-text { color: var(--green-led); font-weight: 700; margin-left: 8px; font-size: 12px; }
+        .days-left { color: var(--warn); font-size: 11px; margin-left: 8px; font-weight: 600; }
+        .time-text { font-size: 10px; color: #94a3b8; margin-left: 5px; font-weight: 400; }
 
-        .calendar-icon { cursor: pointer; font-size: 18px; margin-left: 10px; opacity: 0.6; padding: 5px; }
-
-        .date-area { 
-            display: none; align-items: center; gap: 8px; background: #f1f5f9; 
-            padding: 10px; border-radius: 8px; width: 100%; justify-content: flex-end;
-        } 
-
-        .controls { margin-top: 15px; display: flex; gap: 8px; border-top: 1px solid #f1f5f9; padding-top: 15px; }
-        input[type="text"] { flex: 1; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; outline: none; }
-        input[type="text"]:focus { border-color: var(--blue); }
-        
-        .add-btn { cursor: pointer; padding: 0 20px; border: none; border-radius: 8px; background: var(--blue); color: white; font-weight: 700; font-size: 13px; }
-        .save-date-btn { background: #10b981; color: white; border: none; border-radius: 6px; padding: 8px 12px; cursor: pointer; font-size: 11px; font-weight: 700; }
-        .del-btn { background: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 11px; }
-        
-        input[type="date"] { border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px; font-size: 13px; color: #334155; flex: 1; max-width: 150px; }
-
-        /* Mobil Optimizasyon */
-        @media (max-width: 600px) {
-            .user-row { flex-direction: column; align-items: flex-start; }
-            .user-info-box { width: 100%; }
-            .date-area { margin-top: 8px; }
-            .calendar-icon { margin-left: auto; }
-            h2 { font-size: 1.2rem; }
+        .calendar-icon { 
+            cursor: pointer; 
+            font-size: 16px; 
+            margin-left: 12px; 
+            transition: transform 0.2s;
+            opacity: 0.6;
         }
+        .calendar-icon:hover { transform: scale(1.2); opacity: 1; }
+
+        .date-area { display: none; align-items: center; gap: 8px; background: #f8fafc; padding: 8px; border-radius: 8px; margin-left: auto; } 
+
+        .controls { margin-top: 15px; display: flex; gap: 8px; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 15px; }
+        input[type="text"] { flex: 1; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; }
+        
+        .save-date-btn { background: #10b981; color: white; border: none; border-radius: 6px; padding: 0 12px; cursor: pointer; font-size: 11px; font-weight: 700; height: 30px; }
+        .add-btn { cursor: pointer; padding: 10px 24px; border: none; border-radius: 8px; background: var(--blue); color: white; font-weight: 700; font-size: 13px; }
+        .del-btn { background: #ef4444; color: white; border: none; padding: 0 12px; border-radius: 6px; cursor: pointer; font-size: 11px; height: 30px; }
+        
+        input[type="date"] { border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px 8px; font-size: 12px; height: 30px; color: #334155; width: 130px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Premium Yönetim Paneli ⭐</h2>
+    <h2 style="text-align: center; font-weight: 700; color: #0f172a; margin-bottom: 30px;">Premium Yönetim Paneli ⭐</h2>
     <div id="site-list"></div>
 </div>
 
 <script>
-    // Kendi Firebase yapılandırman
     const firebaseConfig = {
         apiKey: "AIzaSyA_AB1QtRr3bBHi5LXxeTKECtgPJrfyRa4",
         authDomain: "deneme-b8281.firebaseapp.com",
@@ -105,7 +114,7 @@
     const kuralsizSiteler = ["JOJOBET", "MATBET", "PUSULABET"];
 
     function getDaysDiff(dateStr) {
-        if(!dateStr) return 999;
+        if(!dateStr || dateStr === "") return 999;
         const deposit = new Date(dateStr);
         const today = new Date();
         today.setHours(0,0,0,0);
@@ -143,7 +152,7 @@
             db.collection(dbAd).orderBy("createdAt", "asc").onSnapshot(snap => renderUsers(dbAd, snap));
         });
 
-        new Sortable(document.getElementById('site-list'), { animation: 150, handle: '.site-header', onEnd: () => {
+        new Sortable(document.getElementById('site-list'), { animation: 150, onEnd: () => {
             const newOrder = Array.from(document.getElementById('site-list').children).map(el => el.getAttribute('data-id'));
             localStorage.setItem('siteOrder', JSON.stringify(newOrder));
         }});
@@ -169,6 +178,11 @@
         area.style.display = (area.style.display === 'flex') ? 'none' : 'flex';
     }
 
+    function updateDate(siteAd, docId) {
+        const rowDateInput = document.getElementById(`row-date-${docId}`);
+        db.collection(siteAd).doc(docId).update({ lastDepositDate: rowDateInput.value });
+    }
+
     function renderUsers(siteAd, snapshot) {
         const container = document.getElementById(`users-${siteAd}`);
         if(!container) return;
@@ -177,8 +191,8 @@
 
         snapshot.forEach(doc => {
             const user = doc.data();
-            const todayStr = new Date().toLocaleDateString('tr-TR');
-            const claimedToday = user.lastClaimDate && user.lastClaimDate.split(' ')[0] === todayStr;
+            const today = new Date().toLocaleDateString('tr-TR');
+            const claimedToday = user.lastClaimDate && user.lastClaimDate.split(' ')[0] === today;
             
             const isRuleFree = kuralsizSiteler.includes(siteAd);
             const daysPast = getDaysDiff(user.lastDepositDate);
@@ -188,23 +202,23 @@
             const row = document.createElement('div');
             row.className = 'user-row';
             row.innerHTML = `
-                <div class="user-info-box">
+                <div style="display:flex; align-items:center; flex-grow:1;">
                     <div class="led ${claimedToday ? 'active' : ''}" 
-                         style="${!canClaim && !claimedToday ? 'opacity:0.3;' : 'cursor:pointer;'}"
+                         style="${!canClaim && !claimedToday ? 'cursor:not-allowed; opacity:0.3;' : 'cursor:pointer;'}"
                          onclick="if(${canClaim} && !${claimedToday}) claimPromo('${siteAd}', '${doc.id}')"></div>
-                    <div style="margin-left:12px;">
+                    <div style="margin-left:12px; display:flex; align-items:center; flex-wrap: wrap;">
                         <span class="user-name-style">${user.name}</span>
+                        <span class="calendar-icon" onclick="toggleDateArea('${doc.id}')" title="Yatırım Tarihini Yönet">📅</span>
                         ${claimedToday ? 
-                            `<span class="promo-text">Bugün Promosyon Kodunu Aldın. <br><small class="time-text">(${user.lastClaimDate})</small></span>` : 
-                            (!isRuleFree ? (user.lastDepositDate ? (canClaim ? `<span class="days-left">${daysLeft} gün daha alabilirsin.</span>` : `<span style="color:#ef4444; font-size:11px; font-weight:600;">Süre Doldu</span>`) : `<span style="color:#94a3b8; font-size:11px;">(Tarih Yok)</span>`) : '')
+                            `<span class="promo-text">Bugün Promosyon Kodunu Aldın. <small class="time-text">(${user.lastClaimDate})</small></span>` : 
+                            (!isRuleFree ? (user.lastDepositDate ? (canClaim ? `<span class="days-left">${daysLeft} gün daha alabilirsin.</span>` : `<span style="color:#ef4444; font-size:11px; margin-left:8px; font-weight:600;">Süre Doldu</span>`) : `<span style="color:#94a3b8; font-size:11px; margin-left:8px;">(Tarih Belirtilmedi)</span>`) : '')
                         }
                     </div>
-                    <span class="calendar-icon" onclick="toggleDateArea('${doc.id}')">📅</span>
                 </div>
                 <div class="date-area" id="date-area-${doc.id}">
                     <input type="date" id="row-date-${doc.id}" value="${user.lastDepositDate || ''}">
-                    <button class="save-date-btn" onclick="db.collection('${siteAd}').doc('${doc.id}').update({lastDepositDate: document.getElementById('row-date-${doc.id}').value})">KAYDET</button>
-                    <button class="del-btn" onclick="if(confirm('Silinsin mi?')) db.collection('${siteAd}').doc('${doc.id}').delete()">SİL</button>
+                    <button class="save-date-btn" onclick="updateDate('${siteAd}', '${doc.id}')">KAYDET</button>
+                    <button class="del-btn" onclick="db.collection('${siteAd}').doc('${doc.id}').delete()">SİL</button>
                 </div>
             `;
             container.appendChild(row);
