@@ -2,241 +2,1682 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>VIP Yönetim Paneli - Premium Tasarım</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promosyon Yönetim Paneli | Neumorphism</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     
     <style>
-        :root { 
-            --bg-color: #f8fafc; 
-            --card-bg: #ffffff; 
-            --gray-led: #cbd5e1; 
-            --green-led: #22c55e; 
-            --blue: #3b82f6; 
-            --warn: #f59e0b; 
-            --user-text: #1e293b; /* Kullanıcı adı için derin grafit rengi */
+        /* ===== VARIABLES & RESET ===== */
+        :root {
+            /* Light Theme Colors */
+            --bg-light: #f0f2f5;
+            --surface-light: #ffffff;
+            --text-light: #2c3e50;
+            --text-secondary-light: #7f8c8d;
+            --primary-light: #3498db;
+            --success-light: #2ecc71;
+            --warning-light: #f39c12;
+            --danger-light: #e74c3c;
+            --accent-light: #9b59b6;
+            --border-light: #dfe6e9;
+            
+            /* Neumorphism Shadows Light */
+            --shadow-outset-light: 8px 8px 16px #d1d9e6, -8px -8px 16px #ffffff;
+            --shadow-inset-light: inset 4px 4px 8px #d1d9e6, inset -4px -4px 8px #ffffff;
+            --shadow-soft-light: 4px 4px 8px rgba(209, 217, 230, 0.5), -4px -4px 8px rgba(255, 255, 255, 0.5);
+            
+            /* Dark Theme Colors */
+            --bg-dark: #1a1d28;
+            --surface-dark: #2d3246;
+            --text-dark: #ecf0f1;
+            --text-secondary-dark: #bdc3c7;
+            --primary-dark: #3498db;
+            --success-dark: #2ecc71;
+            --warning-dark: #f39c12;
+            --danger-dark: #e74c3c;
+            --accent-dark: #9b59b6;
+            --border-dark: #404756;
+            
+            /* Neumorphism Shadows Dark */
+            --shadow-outset-dark: 8px 8px 16px #151822, -8px -8px 16px #1f2332;
+            --shadow-inset-dark: inset 4px 4px 8px #151822, inset -4px -4px 8px #252a3a;
+            --shadow-soft-dark: 4px 4px 8px rgba(21, 24, 34, 0.5), -4px -4px 8px rgba(31, 35, 50, 0.5);
+            
+            /* Active Theme Variables */
+            --bg: var(--bg-light);
+            --surface: var(--surface-light);
+            --text: var(--text-light);
+            --text-secondary: var(--text-secondary-light);
+            --primary: var(--primary-light);
+            --success: var(--success-light);
+            --warning: var(--warning-light);
+            --danger: var(--danger-light);
+            --accent: var(--accent-light);
+            --border: var(--border-light);
+            --shadow-outset: var(--shadow-outset-light);
+            --shadow-inset: var(--shadow-inset-light);
+            --shadow-soft: var(--shadow-soft-light);
         }
 
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: var(--bg-color); 
-            padding: 20px; 
-            color: #334155;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.2s ease, box-shadow 0.3s ease;
         }
 
-        .container { max-width: 900px; margin: 0 auto; }
-
-        /* Site Başlıkları */
-        .site-item { 
-            background: var(--card-bg); 
-            border: 1px solid #e2e8f0; 
-            margin-bottom: 8px; 
-            border-radius: 12px; 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-            transition: all 0.2s;
-        }
-        .site-header { padding: 16px; display: flex; justify-content: space-between; font-weight: 700; align-items: center; cursor: pointer; }
-
-        .site-content { display: none; padding: 15px; border-top: 1px solid #f1f5f9; background: #fcfcfd; }
-        
-        /* Kullanıcı Satırı Tasarımı */
-        .user-row { 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            padding: 12px 0; 
-            border-bottom: 1px solid #f1f5f9; 
-            gap: 12px; 
-        }
-
-        /* ÖZEL KULLANICI ADI STİLİ */
-        .user-name-style { 
+        body {
             font-family: 'Inter', sans-serif;
-            font-weight: 600; 
-            font-size: 15px; 
-            color: var(--user-text); 
-            letter-spacing: -0.01em; /* Daha modern bir görünüm için hafif daraltma */
-            margin-right: 5px;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            transition: background-color 0.5s ease;
         }
-        
-        .led { width: 14px; height: 14px; border-radius: 50%; background: var(--gray-led); cursor: pointer; flex-shrink: 0; }
-        .led.active { background: var(--green-led); box-shadow: 0 0 12px rgba(34, 197, 94, 0.5); cursor: default; }
-        
-        .promo-text { color: var(--green-led); font-weight: 700; margin-left: 8px; font-size: 12px; }
-        .days-left { color: var(--warn); font-size: 11px; margin-left: 8px; font-weight: 600; }
-        .time-text { font-size: 10px; color: #94a3b8; margin-left: 5px; font-weight: 400; }
 
-        .calendar-icon { 
-            cursor: pointer; 
-            font-size: 16px; 
-            margin-left: 12px; 
-            transition: transform 0.2s;
-            opacity: 0.6;
+        .theme-dark {
+            --bg: var(--bg-dark);
+            --surface: var(--surface-dark);
+            --text: var(--text-dark);
+            --text-secondary: var(--text-secondary-dark);
+            --primary: var(--primary-dark);
+            --success: var(--success-dark);
+            --warning: var(--warning-dark);
+            --danger: var(--danger-dark);
+            --accent: var(--accent-dark);
+            --border: var(--border-dark);
+            --shadow-outset: var(--shadow-outset-dark);
+            --shadow-inset: var(--shadow-inset-dark);
+            --shadow-soft: var(--shadow-soft-dark);
         }
-        .calendar-icon:hover { transform: scale(1.2); opacity: 1; }
 
-        .date-area { display: none; align-items: center; gap: 8px; background: #f8fafc; padding: 8px; border-radius: 8px; margin-left: auto; } 
+        /* ===== LAYOUT ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-        .controls { margin-top: 15px; display: flex; gap: 8px; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 15px; }
-        input[type="text"] { flex: 1; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; }
-        
-        .save-date-btn { background: #10b981; color: white; border: none; border-radius: 6px; padding: 0 12px; cursor: pointer; font-size: 11px; font-weight: 700; height: 30px; }
-        .add-btn { cursor: pointer; padding: 10px 24px; border: none; border-radius: 8px; background: var(--blue); color: white; font-weight: 700; font-size: 13px; }
-        .del-btn { background: #ef4444; color: white; border: none; padding: 0 12px; border-radius: 6px; cursor: pointer; font-size: 11px; height: 30px; }
-        
-        input[type="date"] { border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px 8px; font-size: 12px; height: 30px; color: #334155; width: 130px; }
+        /* ===== HEADER ===== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: var(--shadow-outset);
+        }
+
+        .logo-text h1 {
+            font-weight: 700;
+            font-size: 24px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        /* ===== SEARCH BAR ===== */
+        .search-container {
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 18px 20px 18px 50px;
+            border: none;
+            border-radius: 20px;
+            background: var(--surface);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            box-shadow: var(--shadow-inset);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            box-shadow: var(--shadow-outset);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 18px;
+        }
+
+        /* ===== THEME TOGGLE ===== */
+        .theme-toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+        }
+
+        .theme-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .theme-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--surface);
+            border-radius: 34px;
+            box-shadow: var(--shadow-inset);
+            transition: .4s;
+        }
+
+        .theme-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            transition: .4s;
+            box-shadow: var(--shadow-soft);
+        }
+
+        input:checked + .theme-slider {
+            background-color: var(--surface);
+        }
+
+        input:checked + .theme-slider:before {
+            transform: translateX(30px);
+        }
+
+        .theme-icon {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            z-index: 1;
+        }
+
+        .sun-icon {
+            left: 8px;
+            color: var(--warning);
+        }
+
+        .moon-icon {
+            right: 8px;
+            color: var(--text-secondary);
+        }
+
+        /* ===== SITE CARDS ===== */
+        .site-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .site-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .site-card {
+            background: var(--surface);
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: var(--shadow-outset);
+            transition: all 0.3s ease;
+        }
+
+        .site-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .site-card-header {
+            padding: 25px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .site-card-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .site-card-badge {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+            box-shadow: var(--shadow-outset);
+            flex-shrink: 0;
+        }
+
+        .site-card-name {
+            font-weight: 600;
+            font-size: 18px;
+            color: var(--text);
+        }
+
+        .site-card-count {
+            font-size: 14px;
+            color: var(--text-secondary);
+            background: var(--bg);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            box-shadow: var(--shadow-inset);
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .site-card-content {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, padding 0.3s ease;
+        }
+
+        .site-card.open .site-card-content {
+            padding: 25px;
+            max-height: 500px;
+        }
+
+        /* ===== USER LIST ===== */
+        .user-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .user-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .user-list::-webkit-scrollbar-track {
+            background: var(--bg);
+            border-radius: 10px;
+        }
+
+        .user-list::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px;
+            background: var(--bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow-inset);
+            transition: all 0.2s ease;
+            gap: 15px;
+        }
+
+        .user-item:hover {
+            box-shadow: var(--shadow-outset);
+            transform: translateX(5px);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-status {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--danger);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .user-status.active {
+            background: var(--success);
+            box-shadow: 0 0 12px rgba(46, 204, 113, 0.5);
+        }
+
+        .user-name {
+            font-weight: 500;
+            font-size: 15px;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-details {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .user-days {
+            color: var(--warning);
+            font-weight: 600;
+            padding: 5px 10px;
+            background: var(--bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow-inset);
+            white-space: nowrap;
+        }
+
+        .user-claimed {
+            color: var(--success);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .user-expired {
+            color: var(--danger);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        /* ===== FORM CONTROLS ===== */
+        .user-form {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .form-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 16px 20px;
+            border: none;
+            border-radius: 15px;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            box-shadow: var(--shadow-inset);
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            box-shadow: var(--shadow-outset);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .btn {
+            padding: 16px 24px;
+            border: none;
+            border-radius: 15px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-outset);
+            white-space: nowrap;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: var(--shadow-inset);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #2980b9);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #27ae60);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #c0392b);
+            color: white;
+        }
+
+        .btn-icon {
+            font-size: 16px;
+        }
+
+        /* ===== ACTION BUTTONS ===== */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-outset);
+            border: none;
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, var(--primary), #2980b9);
+            color: white;
+        }
+
+        .action-btn.success {
+            background: linear-gradient(135deg, var(--success), #27ae60);
+            color: white;
+        }
+
+        .action-btn.danger {
+            background: linear-gradient(135deg, var(--danger), #c0392b);
+            color: white;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border-radius: 25px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: var(--shadow-outset);
+            animation: modalFadeIn 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .modal-close {
+            background: var(--bg);
+            border: none;
+            color: var(--text-secondary);
+            font-size: 20px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-inset);
+        }
+
+        .modal-close:hover {
+            background: var(--primary);
+            color: white;
+            box-shadow: var(--shadow-outset);
+        }
+
+        /* ===== DATE PICKER ===== */
+        .date-picker {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 15px;
+            background: var(--bg);
+            border-radius: 15px;
+            box-shadow: var(--shadow-inset);
+            flex-wrap: wrap;
+        }
+
+        .date-input {
+            flex: 1;
+            min-width: 150px;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 10px;
+            background: var(--surface);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            box-shadow: var(--shadow-inset);
+            transition: all 0.3s ease;
+        }
+
+        .date-input:focus {
+            outline: none;
+            box-shadow: var(--shadow-outset);
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* ===== LOADING ===== */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-text {
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .header-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .site-card-header {
+                padding: 20px;
+            }
+            
+            .user-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .user-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            .btn {
+                padding: 14px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .site-card-badge {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+            
+            .site-card-name {
+                font-size: 16px;
+            }
+            
+            .user-form {
+                flex-direction: column;
+            }
+            
+            .form-input {
+                min-width: 100%;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* ===== UTILITY CLASSES ===== */
+        .text-success { color: var(--success); }
+        .text-warning { color: var(--warning); }
+        .text-danger { color: var(--danger); }
+        .text-primary { color: var(--primary); }
+        .text-secondary { color: var(--text-secondary); }
+
+        .mb-20 { margin-bottom: 20px; }
+        .mb-30 { margin-bottom: 30px; }
+        .mt-20 { margin-top: 20px; }
+        .mt-30 { margin-top: 30px; }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <h2 style="text-align: center; font-weight: 700; color: #0f172a; margin-bottom: 30px;">Premium Yönetim Paneli ⭐</h2>
-    <div id="site-list"></div>
-</div>
-
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyA_AB1QtRr3bBHi5LXxeTKECtgPJrfyRa4",
-        authDomain: "deneme-b8281.firebaseapp.com",
-        projectId: "deneme-b8281",
-        storageBucket: "deneme-b8281.firebasestorage.app",
-        messagingSenderId: "844910163064",
-        appId: "1:844910163064:web:f4ad80295fb39d1322698d"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    const favoriler = ["Nakitbahis", "Mavibet", "Odeonbet", "Megabahis", "Kavbet", "Jojobet", "Matbet", "Pusulabet"];
-    const digerleri = ["HIZLICASİNO", "EGEBET", "TURBOSLOT", "HOLİGAN", "BETSMOVE", "LUNABET", "ELİTCASİNO", "COINBAR"];
-    const kuralsizSiteler = ["JOJOBET", "MATBET", "PUSULABET"];
-
-    function getDaysDiff(dateStr) {
-        if(!dateStr || dateStr === "") return 999;
-        const deposit = new Date(dateStr);
-        const today = new Date();
-        today.setHours(0,0,0,0);
-        deposit.setHours(0,0,0,0);
-        return Math.floor((today - deposit) / (1000 * 60 * 60 * 24));
-    }
-
-    function init() {
-        let tumSiteler = [...favoriler, ...digerleri];
-        const savedOrder = JSON.parse(localStorage.getItem('siteOrder'));
-        const liste = savedOrder || tumSiteler;
-
-        liste.forEach(siteAd => {
-            const cleanAd = siteAd.replace(' ⭐','');
-            const isFav = favoriler.includes(cleanAd);
-            const dbAd = cleanAd.replace(/\s/g, '').toUpperCase(); 
-
-            const div = document.createElement('div');
-            div.className = 'site-item';
-            div.setAttribute('data-id', siteAd);
-            div.innerHTML = `
-                <div class="site-header" onclick="toggleMenu('${dbAd}')">
-                    <span>${isFav && !siteAd.includes('⭐') ? siteAd + ' ⭐' : siteAd}</span>
-                    <span id="count-${dbAd}" style="font-size:12px; color:#94a3b8; font-weight:400;">...</span>
+    <div class="container">
+        <!-- HEADER -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-crown"></i>
                 </div>
-                <div class="site-content" id="content-${dbAd}">
-                    <div id="users-${dbAd}"></div>
-                    <div class="controls">
-                        <input type="text" id="name-${dbAd}" placeholder="Kullanıcı Adı Ekle" onkeydown="handleEnter(event, '${dbAd}')">
-                        <button class="add-btn" onclick="addUser('${dbAd}')">EKLE</button>
-                    </div>
+                <div class="logo-text">
+                    <h1>Promosyon Yönetim</h1>
+                    <p>Profesyonel Panel | Neumorphism Tasarım</p>
                 </div>
-            `;
-            document.getElementById('site-list').appendChild(div);
-            db.collection(dbAd).orderBy("createdAt", "asc").onSnapshot(snap => renderUsers(dbAd, snap));
-        });
-
-        new Sortable(document.getElementById('site-list'), { animation: 150, onEnd: () => {
-            const newOrder = Array.from(document.getElementById('site-list').children).map(el => el.getAttribute('data-id'));
-            localStorage.setItem('siteOrder', JSON.stringify(newOrder));
-        }});
-    }
-
-    function handleEnter(event, siteAd) {
-        if (event.key === "Enter") addUser(siteAd);
-    }
-
-    function addUser(siteAd) {
-        const nameInp = document.getElementById(`name-${siteAd}`);
-        if(!nameInp.value.trim()) return;
-        db.collection(siteAd).add({
-            name: nameInp.value.trim(),
-            lastDepositDate: "",
-            lastClaimDate: "", 
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        }).then(() => { nameInp.value = ""; nameInp.focus(); });
-    }
-
-    function toggleDateArea(docId) {
-        const area = document.getElementById(`date-area-${docId}`);
-        area.style.display = (area.style.display === 'flex') ? 'none' : 'flex';
-    }
-
-    function updateDate(siteAd, docId) {
-        const rowDateInput = document.getElementById(`row-date-${docId}`);
-        db.collection(siteAd).doc(docId).update({ lastDepositDate: rowDateInput.value });
-    }
-
-    function renderUsers(siteAd, snapshot) {
-        const container = document.getElementById(`users-${siteAd}`);
-        if(!container) return;
-        container.innerHTML = "";
-        document.getElementById(`count-${siteAd}`).innerText = snapshot.size + " Kişi";
-
-        snapshot.forEach(doc => {
-            const user = doc.data();
-            const today = new Date().toLocaleDateString('tr-TR');
-            const claimedToday = user.lastClaimDate && user.lastClaimDate.split(' ')[0] === today;
+            </div>
             
-            const isRuleFree = kuralsizSiteler.includes(siteAd);
-            const daysPast = getDaysDiff(user.lastDepositDate);
-            const canClaim = isRuleFree || (user.lastDepositDate && daysPast >= 0 && daysPast <= 7);
-            const daysLeft = 7 - daysPast;
+            <div class="header-controls">
+                <div class="theme-toggle">
+                    <input type="checkbox" id="theme-switch">
+                    <label for="theme-switch" class="theme-slider">
+                        <span class="theme-icon sun-icon"><i class="fas fa-sun"></i></span>
+                        <span class="theme-icon moon-icon"><i class="fas fa-moon"></i></span>
+                    </label>
+                </div>
+                <button class="btn btn-primary" onclick="showSettingsModal()">
+                    <i class="fas fa-cog btn-icon"></i> Ayarlar
+                </button>
+            </div>
+        </header>
 
-            const row = document.createElement('div');
-            row.className = 'user-row';
-            row.innerHTML = `
-                <div style="display:flex; align-items:center; flex-grow:1;">
-                    <div class="led ${claimedToday ? 'active' : ''}" 
-                         style="${!canClaim && !claimedToday ? 'cursor:not-allowed; opacity:0.3;' : 'cursor:pointer;'}"
-                         onclick="if(${canClaim} && !${claimedToday}) claimPromo('${siteAd}', '${doc.id}')"></div>
-                    <div style="margin-left:12px; display:flex; align-items:center; flex-wrap: wrap;">
-                        <span class="user-name-style">${user.name}</span>
-                        <span class="calendar-icon" onclick="toggleDateArea('${doc.id}')" title="Yatırım Tarihini Yönet">📅</span>
-                        ${claimedToday ? 
-                            `<span class="promo-text">Bugün Promosyon Kodunu Aldın. <small class="time-text">(${user.lastClaimDate})</small></span>` : 
-                            (!isRuleFree ? (user.lastDepositDate ? (canClaim ? `<span class="days-left">${daysLeft} gün daha alabilirsin.</span>` : `<span style="color:#ef4444; font-size:11px; margin-left:8px; font-weight:600;">Süre Doldu</span>`) : `<span style="color:#94a3b8; font-size:11px; margin-left:8px;">(Tarih Belirtilmedi)</span>`) : '')
-                        }
+        <!-- SEARCH BAR -->
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="global-search" 
+                       placeholder="Kullanıcı adı veya site adı ara...">
+            </div>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="action-buttons">
+            <button class="action-btn primary" onclick="showAddSiteModal()">
+                <i class="fas fa-plus"></i> Site Ekle
+            </button>
+            <button class="action-btn success" onclick="exportData()">
+                <i class="fas fa-file-export"></i> Dışa Aktar
+            </button>
+            <button class="action-btn" onclick="showHelpModal()">
+                <i class="fas fa-question-circle"></i> Yardım
+            </button>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div id="site-list"></div>
+        
+        <!-- Loading State -->
+        <div id="loading-state" class="loading">
+            <div class="spinner"></div>
+        </div>
+        
+        <!-- Empty State -->
+        <div id="empty-state" class="empty-state" style="display: none;">
+            <div class="empty-icon">
+                <i class="fas fa-inbox"></i>
+            </div>
+            <div class="empty-text">Henüz site eklenmemiş</div>
+            <button class="btn btn-primary" onclick="showAddSiteModal()">
+                <i class="fas fa-plus btn-icon"></i> İlk Siteyi Ekle
+            </button>
+        </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Ayarlar</h2>
+                <button class="modal-close" onclick="hideModal('settings')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="mb-30">
+                <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 15px; color: var(--text);">Tema Ayarları</h3>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <button class="btn" onclick="setTheme('light')" id="theme-light">
+                        <i class="fas fa-sun btn-icon"></i> Aydınlık
+                    </button>
+                    <button class="btn" onclick="setTheme('dark')" id="theme-dark">
+                        <i class="fas fa-moon btn-icon"></i> Karanlık
+                    </button>
+                    <button class="btn" onclick="setTheme('auto')" id="theme-auto">
+                        <i class="fas fa-adjust btn-icon"></i> Otomatik
+                    </button>
+                </div>
+            </div>
+            
+            <div class="mb-30">
+                <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 15px; color: var(--text);">Veri İşlemleri</h3>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <button class="btn btn-success" onclick="importData()">
+                        <i class="fas fa-file-import btn-icon"></i> İçe Aktar
+                    </button>
+                    <button class="btn btn-danger" onclick="showConfirmModal()">
+                        <i class="fas fa-trash-alt btn-icon"></i> Temizle
+                    </button>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" style="width: 100%;" onclick="hideModal('settings')">
+                <i class="fas fa-check btn-icon"></i> Tamam
+            </button>
+        </div>
+    </div>
+
+    <!-- ADD SITE MODAL -->
+    <div class="modal-overlay" id="add-site-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Yeni Site Ekle</h2>
+                <button class="modal-close" onclick="hideModal('add-site')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="mb-30">
+                <input type="text" id="new-site-name" class="form-input mb-20" placeholder="Site adı">
+                <div style="color: var(--text-secondary); font-size: 14px; margin-top: 10px;">
+                    <i class="fas fa-info-circle"></i> Site adı büyük/küçük harf duyarlıdır
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 15px;">
+                <button class="btn btn-success" style="flex: 1;" onclick="addNewSite()">
+                    <i class="fas fa-plus btn-icon"></i> Ekle
+                </button>
+                <button class="btn" style="flex: 1;" onclick="hideModal('add-site')">
+                    <i class="fas fa-times btn-icon"></i> İptal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD USER MODAL -->
+    <div class="modal-overlay" id="add-user-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="add-user-title">Kullanıcı Ekle</h2>
+                <button class="modal-close" onclick="hideModal('add-user')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="mb-30">
+                <input type="text" id="new-user-name" class="form-input mb-20" placeholder="Kullanıcı Adı">
+                <input type="date" id="new-user-date" class="form-input mb-20" placeholder="Yatırım Tarihi">
+                <div style="color: var(--text-secondary); font-size: 14px;">
+                    <i class="fas fa-info-circle"></i> Tarih belirtmezseniz promosyon alınamaz
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 15px;">
+                <button class="btn btn-success" style="flex: 1;" onclick="addNewUser()">
+                    <i class="fas fa-plus btn-icon"></i> Ekle
+                </button>
+                <button class="btn" style="flex: 1;" onclick="hideModal('add-user')">
+                    <i class="fas fa-times btn-icon"></i> İptal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT DATE MODAL -->
+    <div class="modal-overlay" id="edit-date-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="edit-date-title">Tarih Düzenle</h2>
+                <button class="modal-close" onclick="hideModal('edit-date')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="mb-30">
+                <div class="date-picker">
+                    <input type="date" id="edit-date-input" class="date-input">
+                    <button class="btn btn-success" onclick="saveEditDate()">
+                        <i class="fas fa-save btn-icon"></i> Kaydet
+                    </button>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" style="width: 100%;" onclick="hideModal('edit-date')">
+                <i class="fas fa-check btn-icon"></i> Tamam
+            </button>
+        </div>
+    </div>
+
+    <!-- CONFIRM MODAL -->
+    <div class="modal-overlay" id="confirm-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Onay Gerekli</h2>
+                <button class="modal-close" onclick="hideModal('confirm')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="mb-30">
+                <p style="font-size: 16px; line-height: 1.6; color: var(--text);" id="confirm-message">
+                    Bu işlemi gerçekleştirmek istediğinize emin misiniz?
+                </p>
+            </div>
+            
+            <div style="display: flex; gap: 15px;">
+                <button class="btn btn-danger" style="flex: 1;" id="confirm-action-btn">
+                    <i class="fas fa-check btn-icon"></i> Evet
+                </button>
+                <button class="btn" style="flex: 1;" onclick="hideModal('confirm')">
+                    <i class="fas fa-times btn-icon"></i> İptal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HELP MODAL -->
+    <div class="modal-overlay" id="help-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Yardım ve Kullanım Kılavuzu</h2>
+                <button class="modal-close" onclick="hideModal('help')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="mb-30">
+                <div style="color: var(--text); line-height: 1.7;">
+                    <h3 style="margin-bottom: 10px; color: var(--primary);">Nasıl Kullanılır:</h3>
+                    <ul style="padding-left: 20px; margin-bottom: 20px;">
+                        <li>Site eklemek için "Site Ekle" butonunu kullanın</li>
+                        <li>Site kartına tıklayarak kullanıcıları görüntüleyin</li>
+                        <li>Kullanıcı eklemek için site içindeki formu kullanın</li>
+                        <li>Yeşil LED'e tıklayarak promosyon alındı olarak işaretleyin</li>
+                        <li>Takvim ikonuna tıklayarak tarih düzenleyin</li>
+                    </ul>
+                    
+                    <h3 style="margin-bottom: 10px; color: var(--primary);">Özellikler:</h3>
+                    <ul style="padding-left: 20px;">
+                        <li>Aydınlık/Karanlık tema desteği</li>
+                        <li>Mobil uyumlu tasarım</li>
+                        <li>Gerçek zamanlı veri senkronizasyonu</li>
+                        <li>Veri dışa/içe aktarma</li>
+                        <li>Gelişmiş arama özelliği</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" style="width: 100%;" onclick="hideModal('help')">
+                <i class="fas fa-check btn-icon"></i> Tamam
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ===== FIREBASE CONFIG =====
+        const firebaseConfig = {
+            apiKey: "AIzaSyA_AB1QtRr3bBHi5LXxeTKECtgPJrfyRa4",
+            authDomain: "deneme-b8281.firebaseapp.com",
+            projectId: "deneme-b8281",
+            storageBucket: "deneme-b8281.firebasestorage.app",
+            messagingSenderId: "844910163064",
+            appId: "1:844910163064:web:f4ad80295fb39d1322698d"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // ===== DATA =====
+        const sites = ["Nakitbahis", "Mavibet", "Odeonbet", "Megabahis", "Kavbet", "Jojobet", "Matbet", "Pusulabet",
+                      "HIZLICASİNO", "EGEBET", "TURBOSLOT", "HOLİGAN", "BETSMOVE", "LUNABET", "ELİTCASİNO", "COINBAR"];
+        
+        const kuralsizSiteler = ["JOJOBET", "MATBET", "PUSULABET"];
+
+        // ===== STATE =====
+        let currentSite = '';
+        let currentUser = { id: '', name: '', site: '' };
+        let siteListeners = {};
+        let allSites = [...sites];
+
+        // ===== THEME MANAGEMENT =====
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'auto') {
+                setTheme(prefersDark ? 'dark' : 'light');
+            } else {
+                setTheme(savedTheme);
+            }
+            
+            document.getElementById('theme-switch').checked = savedTheme === 'dark';
+            
+            // Update theme buttons
+            document.querySelectorAll('#theme-light, #theme-dark, #theme-auto').forEach(btn => {
+                btn.classList.remove('btn-primary');
+            });
+            document.getElementById(`theme-${savedTheme}`).classList.add('btn-primary');
+        }
+
+        function setTheme(theme) {
+            if (theme === 'auto') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.body.classList.toggle('theme-dark', prefersDark);
+                localStorage.setItem('theme', 'auto');
+                document.getElementById('theme-switch').checked = prefersDark;
+            } else {
+                document.body.classList.toggle('theme-dark', theme === 'dark');
+                localStorage.setItem('theme', theme);
+                document.getElementById('theme-switch').checked = theme === 'dark';
+            }
+            
+            // Update theme buttons
+            document.querySelectorAll('#theme-light, #theme-dark, #theme-auto').forEach(btn => {
+                btn.classList.remove('btn-primary');
+            });
+            document.getElementById(`theme-${theme}`).classList.add('btn-primary');
+        }
+
+        // ===== UTILITY FUNCTIONS =====
+        function getDaysDiff(dateStr) {
+            if (!dateStr || dateStr === "") return 999;
+            const deposit = new Date(dateStr);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            deposit.setHours(0, 0, 0, 0);
+            return Math.floor((today - deposit) / (1000 * 60 * 60 * 24));
+        }
+
+        // ===== MODAL FUNCTIONS =====
+        function showModal(modalId) {
+            document.getElementById(`${modalId}-modal`).style.display = 'flex';
+        }
+
+        function hideModal(modalId) {
+            document.getElementById(`${modalId}-modal`).style.display = 'none';
+        }
+
+        function showSettingsModal() {
+            showModal('settings');
+        }
+
+        function showAddSiteModal() {
+            document.getElementById('new-site-name').value = '';
+            showModal('add-site');
+        }
+
+        function showAddUserModal(siteAd, siteName) {
+            currentSite = siteAd;
+            document.getElementById('add-user-title').textContent = `${siteName} - Kullanıcı Ekle`;
+            document.getElementById('new-user-name').value = '';
+            document.getElementById('new-user-date').value = '';
+            showModal('add-user');
+        }
+
+        function showEditDateModal(siteAd, userId, userName) {
+            currentUser = { id: userId, name: userName, site: siteAd };
+            document.getElementById('edit-date-title').textContent = `${userName} - Tarih Düzenle`;
+            
+            // Load current date
+            db.collection(siteAd).doc(userId).get().then(doc => {
+                if (doc.exists) {
+                    const user = doc.data();
+                    document.getElementById('edit-date-input').value = user.lastDepositDate || '';
+                }
+            });
+            
+            showModal('edit-date');
+        }
+
+        function showConfirmModal(message = 'Bu işlemi gerçekleştirmek istediğinize emin misiniz?', action = null, actionText = 'Evet') {
+            document.getElementById('confirm-message').textContent = message;
+            
+            const actionBtn = document.getElementById('confirm-action-btn');
+            actionBtn.innerHTML = `<i class="fas fa-check btn-icon"></i> ${actionText}`;
+            
+            // Remove previous event listeners
+            const newActionBtn = actionBtn.cloneNode(true);
+            actionBtn.parentNode.replaceChild(newActionBtn, actionBtn);
+            
+            if (action) {
+                newActionBtn.onclick = action;
+            }
+            
+            showModal('confirm');
+        }
+
+        function showHelpModal() {
+            showModal('help');
+        }
+
+        // ===== SITE MANAGEMENT =====
+        function addNewSite() {
+            const siteNameInput = document.getElementById('new-site-name');
+            const siteName = siteNameInput.value.trim();
+            
+            if (!siteName) {
+                showToast('Lütfen site adı girin!', 'warning');
+                return;
+            }
+            
+            if (allSites.includes(siteName)) {
+                showToast('Bu site zaten mevcut!', 'warning');
+                return;
+            }
+            
+            allSites.push(siteName);
+            hideModal('add-site');
+            createSiteCard(siteName);
+            showToast('Site başarıyla eklendi!', 'success');
+            
+            // Save to localStorage
+            localStorage.setItem('customSites', JSON.stringify(allSites.filter(s => !sites.includes(s))));
+        }
+
+        function createSiteCard(siteName) {
+            const cleanName = siteName;
+            const dbAd = cleanName.replace(/\s/g, '').toUpperCase();
+            const cardId = `card-${dbAd}`;
+            
+            const card = document.createElement('div');
+            card.className = 'site-card fade-in';
+            card.id = cardId;
+            
+            // Get first two letters for badge
+            const badgeText = cleanName.substring(0, 2).toUpperCase();
+            
+            card.innerHTML = `
+                <div class="site-card-header" onclick="toggleSiteCard('${cardId}')">
+                    <div class="site-card-title">
+                        <div class="site-card-badge">${badgeText}</div>
+                        <div class="site-card-name">${cleanName}</div>
+                    </div>
+                    <div class="site-card-count" id="count-${dbAd}">0</div>
+                </div>
+                <div class="site-card-content">
+                    <div class="user-list" id="users-${dbAd}">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                    <div class="user-form">
+                        <input type="text" class="form-input" id="name-${dbAd}" 
+                               placeholder="Kullanıcı adı girin..." 
+                               onkeydown="if(event.key === 'Enter') addUser('${dbAd}', '${cleanName}')">
+                        <button class="btn btn-success" onclick="addUser('${dbAd}', '${cleanName}')">
+                            <i class="fas fa-plus btn-icon"></i> Ekle
+                        </button>
+                        <button class="btn btn-primary" onclick="showAddUserModal('${dbAd}', '${cleanName}')">
+                            <i class="fas fa-edit btn-icon"></i> Detaylı
+                        </button>
                     </div>
                 </div>
-                <div class="date-area" id="date-area-${doc.id}">
-                    <input type="date" id="row-date-${doc.id}" value="${user.lastDepositDate || ''}">
-                    <button class="save-date-btn" onclick="updateDate('${siteAd}', '${doc.id}')">KAYDET</button>
-                    <button class="del-btn" onclick="db.collection('${siteAd}').doc('${doc.id}').delete()">SİL</button>
-                </div>
             `;
-            container.appendChild(row);
-        });
-    }
+            
+            document.getElementById('site-list').appendChild(card);
+            
+            // Setup listener for this site
+            if (!siteListeners[dbAd]) {
+                siteListeners[dbAd] = db.collection(dbAd).orderBy("createdAt", "asc")
+                    .onSnapshot(snap => renderUsers(dbAd, snap));
+            }
+            
+            // Update empty state
+            updateEmptyState();
+        }
 
-    function claimPromo(siteAd, docId) {
-        const d = new Date();
-        const dateStr = d.toLocaleDateString('tr-TR') + " " + d.toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
-        db.collection(siteAd).doc(docId).update({ lastClaimDate: dateStr });
-    }
+        function toggleSiteCard(cardId) {
+            const card = document.getElementById(cardId);
+            card.classList.toggle('open');
+        }
 
-    function toggleMenu(id) {
-        let el = document.getElementById('content-' + id);
-        if (el) el.style.display = (el.style.display === 'block') ? 'none' : 'block';
-    }
+        // ===== USER FUNCTIONS =====
+        function addUser(siteAd, siteName, userName = null, userDate = null) {
+            let nameInput, dateInput;
+            
+            if (userName) {
+                nameInput = { value: userName };
+                dateInput = { value: userDate || '' };
+                hideModal('add-user');
+            } else {
+                nameInput = document.getElementById(`name-${siteAd}`);
+                dateInput = { value: '' };
+            }
+            
+            if (!nameInput.value.trim()) {
+                showToast('Lütfen kullanıcı adı girin!', 'warning');
+                return;
+            }
+            
+            db.collection(siteAd).add({
+                name: nameInput.value.trim(),
+                lastDepositDate: dateInput.value || "",
+                lastClaimDate: "", 
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                if (!userName) {
+                    nameInput.value = "";
+                    nameInput.focus();
+                }
+                showToast('Kullanıcı başarıyla eklendi!', 'success');
+            }).catch(error => {
+                showToast('Bir hata oluştu!', 'danger');
+                console.error("Error adding user: ", error);
+            });
+        }
 
-    init();
-</script>
+        function addNewUser() {
+            const userName = document.getElementById('new-user-name').value;
+            const userDate = document.getElementById('new-user-date').value;
+            
+            if (!userName.trim()) {
+                showToast('Lütfen kullanıcı adı girin!', 'warning');
+                return;
+            }
+            
+            addUser(currentSite, '', userName, userDate);
+        }
+
+        function saveEditDate() {
+            const dateValue = document.getElementById('edit-date-input').value;
+            
+            db.collection(currentUser.site).doc(currentUser.id).update({ 
+                lastDepositDate: dateValue 
+            }).then(() => {
+                hideModal('edit-date');
+                showToast('Tarih güncellendi!', 'success');
+            });
+        }
+
+        function claimPromo(siteAd, docId) {
+            const d = new Date();
+            const dateStr = d.toLocaleDateString('tr-TR') + " " + 
+                           d.toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'});
+            
+            db.collection(siteAd).doc(docId).update({ 
+                lastClaimDate: dateStr 
+            }).then(() => {
+                showToast('Promosyon alındı olarak işaretlendi!', 'success');
+            });
+        }
+
+        function deleteUser(siteAd, docId, userName) {
+            showConfirmModal(
+                `${userName} kullanıcısını silmek istediğinize emin misiniz?`,
+                () => {
+                    db.collection(siteAd).doc(docId).delete().then(() => {
+                        showToast('Kullanıcı silindi!', 'success');
+                    });
+                },
+                'Sil'
+            );
+        }
+
+        // ===== RENDER FUNCTIONS =====
+        function renderUsers(siteAd, snapshot) {
+            const container = document.getElementById(`users-${siteAd}`);
+            const countElement = document.getElementById(`count-${siteAd}`);
+            
+            if (!container || !countElement) return;
+            
+            container.innerHTML = "";
+            countElement.textContent = snapshot.size;
+            
+            if (snapshot.size === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 30px; color: var(--text-secondary);">
+                        <i class="fas fa-users" style="font-size: 40px; margin-bottom: 15px; opacity: 0.5;"></i>
+                        <p>Henüz kullanıcı eklenmemiş</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const today = new Date().toLocaleDateString('tr-TR');
+            
+            snapshot.forEach(doc => {
+                const user = doc.data();
+                const claimedToday = user.lastClaimDate && user.lastClaimDate.split(' ')[0] === today;
+                const isRuleFree = kuralsizSiteler.includes(siteAd);
+                const daysPast = getDaysDiff(user.lastDepositDate);
+                const canClaim = isRuleFree || (user.lastDepositDate && daysPast >= 0 && daysPast <= 7);
+                const daysLeft = 7 - daysPast;
+                
+                const userElement = document.createElement('div');
+                userElement.className = 'user-item';
+                
+                let statusText = '';
+                let statusClass = '';
+                if (claimedToday) {
+                    statusText = 'Bugün alındı';
+                    statusClass = 'user-claimed';
+                } else if (!isRuleFree) {
+                    if (user.lastDepositDate) {
+                        if (canClaim) {
+                            statusText = `${daysLeft} gün kaldı`;
+                            statusClass = 'user-days';
+                        } else {
+                            statusText = 'Süre doldu';
+                            statusClass = 'user-expired';
+                        }
+                    } else {
+                        statusText = 'Tarih yok';
+                        statusClass = 'text-secondary';
+                    }
+                }
+                
+                userElement.innerHTML = `
+                    <div class="user-info">
+                        <div class="user-status ${claimedToday ? 'active' : ''}" 
+                             onclick="if(${canClaim} && !${claimedToday}) claimPromo('${siteAd}', '${doc.id}')"
+                             style="${!canClaim && !claimedToday ? 'cursor: not-allowed; opacity: 0.5;' : 'cursor: pointer;'}"></div>
+                        <div class="user-name">${user.name}</div>
+                        <div class="user-details">
+                            ${statusText ? `<span class="${statusClass}">${statusText}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="user-actions">
+                        <button class="btn" style="padding: 10px 14px; font-size: 13px;" 
+                                onclick="showEditDateModal('${siteAd}', '${doc.id}', '${user.name}')">
+                            <i class="fas fa-calendar-alt btn-icon"></i>
+                        </button>
+                        <button class="btn btn-danger" style="padding: 10px 14px; font-size: 13px;" 
+                                onclick="deleteUser('${siteAd}', '${doc.id}', '${user.name}')">
+                            <i class="fas fa-trash-alt btn-icon"></i>
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(userElement);
+            });
+        }
+
+        function updateEmptyState() {
+            const siteList = document.getElementById('site-list');
+            const emptyState = document.getElementById('empty-state');
+            const loadingState = document.getElementById('loading-state');
+            
+            if (loadingState) {
+                loadingState.style.display = 'none';
+            }
+            
+            if (siteList.children.length === 0) {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+            }
+        }
+
+        // ===== SEARCH FUNCTIONALITY =====
+        function initSearch() {
+            const searchInput = document.getElementById('global-search');
+            searchInput.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                
+                document.querySelectorAll('.site-card').forEach(card => {
+                    const siteName = card.querySelector('.site-card-name').textContent.toLowerCase();
+                    const users = card.querySelectorAll('.user-name');
+                    let hasMatch = siteName.includes(searchTerm);
+                    
+                    // Check users
+                    users.forEach(user => {
+                        if (user.textContent.toLowerCase().includes(searchTerm)) {
+                            hasMatch = true;
+                            user.closest('.user-item').style.backgroundColor = 'var(--primary-light)';
+                            user.closest('.user-item').style.opacity = '0.9';
+                        } else {
+                            user.closest('.user-item').style.backgroundColor = '';
+                            user.closest('.user-item').style.opacity = '';
+                        }
+                    });
+                    
+                    // Show/hide card
+                    card.style.display = hasMatch || searchTerm === '' ? 'block' : 'none';
+                });
+            });
+        }
+
+        // ===== DATA EXPORT/IMPORT =====
+        async function exportData() {
+            try {
+                const allData = {};
+                
+                for (const site of allSites) {
+                    const dbAd = site.replace(/\s/g, '').toUpperCase();
+                    const snapshot = await db.collection(dbAd).get();
+                    allData[site] = [];
+                    
+                    snapshot.forEach(doc => {
+                        allData[site].push({
+                            id: doc.id,
+                            ...doc.data()
+                        });
+                    });
+                }
+                
+                const dataStr = JSON.stringify(allData, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+                
+                const exportFileDefaultName = `promosyon-verileri-${new Date().toISOString().split('T')[0]}.json`;
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+                
+                showToast('Veriler başarıyla dışa aktarıldı!', 'success');
+            } catch (error) {
+                showToast('Dışa aktarma sırasında hata oluştu!', 'danger');
+                console.error(error);
+            }
+        }
+
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = async e => {
+                const file = e.target.files[0];
+                try {
+                    const text = await file.text();
+                    const data = JSON.parse(text);
+                    
+                    let totalUsers = 0;
+                    for (const [siteName, users] of Object.entries(data)) {
+                        totalUsers += users.length;
+                    }
+                    
+                    showConfirmModal(
+                        `${Object.keys(data).length} site ve toplam ${totalUsers} kullanıcı içe aktarılacak. Devam etmek istiyor musunuz?`,
+                        async () => {
+                            try {
+                                for (const [siteName, users] of Object.entries(data)) {
+                                    const dbAd = siteName.replace(/\s/g, '').toUpperCase();
+                                    
+                                    // Add site if not exists
+                                    if (!allSites.includes(siteName)) {
+                                        allSites.push(siteName);
+                                        createSiteCard(siteName);
+                                    }
+                                    
+                                    for (const user of users) {
+                                        await db.collection(dbAd).add({
+                                            name: user.name,
+                                            lastDepositDate: user.lastDepositDate || "",
+                                            lastClaimDate: user.lastClaimDate || "",
+                                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                                        });
+                                    }
+                                }
+                                
+                                showToast('Veriler başarıyla içe aktarıldı!', 'success');
+                                hideModal('confirm');
+                            } catch (error) {
+                                showToast('İçe aktarma sırasında hata oluştu!', 'danger');
+                                console.error(error);
+                            }
+                        },
+                        'İçe Aktar'
+                    );
+                } catch (error) {
+                    showToast('Dosya okuma sırasında hata oluştu!', 'danger');
+                    console.error(error);
+                }
+            };
+            
+            input.click();
+        }
+
+        // ===== TOAST NOTIFICATION =====
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background: ${type === 'success' ? 'var(--success)' : 
+                           type === 'warning' ? 'var(--warning)' : 
+                           type === 'danger' ? 'var(--danger)' : 'var(--primary)'};
+                color: white;
+                padding: 15px 25px;
+                border-radius: 15px;
+                box-shadow: var(--shadow-outset);
+                animation: toastSlideIn 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                max-width: 350px;
+                z-index: 9999;
+                font-weight: 500;
+            `;
+            
+            const icon = type === 'success' ? 'fa-check-circle' :
+                        type === 'warning' ? 'fa-exclamation-triangle' :
+                        type === 'danger' ? 'fa-times-circle' : 'fa-info-circle';
+            
+            toast.innerHTML = `
+                <i class="fas ${icon}" style="font-size: 20px;"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'toastSlideOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+            
+            // Add animation keyframes
+            if (!document.querySelector('#toast-animations')) {
+                const style = document.createElement('style');
+                style.id = 'toast-animations';
+                style.textContent = `
+                    @keyframes toastSlideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes toastSlideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        // ===== INITIALIZATION =====
+        function init() {
+            // Initialize theme
+            initTheme();
+            
+            // Setup theme toggle
+            document.getElementById('theme-switch').addEventListener('change', function() {
+                setTheme(this.checked ? 'dark' : 'light');
+            });
+            
+            // Load custom sites from localStorage
+            const customSites = JSON.parse(localStorage.getItem('customSites') || '[]');
+            allSites = [...sites, ...customSites];
+            
+            // Create site cards
+            allSites.forEach(siteName => {
+                createSiteCard(siteName);
+            });
+            
+            // Initialize search
+            initSearch();
+            
+            // Update empty state
+            setTimeout(() => updateEmptyState(), 1000);
+            
+            // Add toast container
+            const toastContainer = document.createElement('div');
+            toastContainer.id = 'toast-container';
+            document.body.appendChild(toastContainer);
+        }
+
+        // ===== INITIALIZE APP =====
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
 </body>
 </html>
