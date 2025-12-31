@@ -2,316 +2,227 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Promosyon Kontrol Paneli</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VIP Promosyon Yönetim Paneli</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    
     <style>
-        :root {
-            --bg-color: #0d1117;
-            --card-bg: #161b22;
-            --border-color: #30363d;
-            --text-gold: #ffcc00;
-            --text-white: #c9d1d9;
-            --green-led: #00ff00;
-            --gray-led: #484f58;
-            --red-delete: #da3633;
+        :root { 
+            --bg-color: #f8fafc; --card-bg: #ffffff; --gray-led: #cbd5e1; 
+            --green-led: #22c55e; --blue: #3b82f6; --warn: #f59e0b; --user-text: #1e293b; 
         }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-white);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            margin: 0; padding: 10px;
-            display: flex; flex-direction: column; align-items: center;
+        body { 
+            font-family: 'Inter', sans-serif; background-color: var(--bg-color); 
+            padding: 10px; margin: 0; color: #334155; -webkit-tap-highlight-color: transparent;
         }
 
-        .container { width: 100%; max-width: 500px; }
-        h2 { color: white; margin-bottom: 15px; text-align: left; font-size: 1.4rem; }
+        .container { max-width: 900px; margin: 0 auto; padding-bottom: 50px; }
 
-        .add-user-section {
-            background: var(--card-bg);
-            padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);
-            margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px;
+        h2 { text-align: center; font-weight: 700; color: #0f172a; margin: 20px 0; font-size: 1.5rem; }
+
+        .site-item { 
+            background: var(--card-bg); border: 1px solid #e2e8f0; 
+            margin-bottom: 8px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         }
 
-        @media (min-width: 400px) {
-            .add-user-section { flex-direction: row; }
-            .add-user-section select { flex: 1; }
-            .add-user-section input { flex: 2; }
+        .site-header { padding: 16px; display: flex; justify-content: space-between; font-weight: 700; align-items: center; cursor: pointer; }
+
+        .site-content { display: none; padding: 10px; border-top: 1px solid #f1f5f9; background: #fcfcfd; }
+        
+        .user-row { 
+            display: flex; align-items: center; justify-content: space-between; 
+            padding: 12px 5px; border-bottom: 1px solid #f1f5f9; gap: 10px; flex-wrap: wrap;
         }
 
-        select, input, button {
-            background: #0d1117; border: 1px solid var(--border-color);
-            color: white; padding: 10px; border-radius: 6px; outline: none; font-size: 0.9rem;
-        }
+        .user-info-box { display: flex; align-items: center; flex: 1; min-width: 200px; }
 
-        .btn-add { background: #238636; cursor: pointer; border: none; font-weight: bold; }
-        .btn-add:hover { background: #2ea043; }
-
-        .site-card {
-            background: var(--card-bg); border: 1px solid var(--border-color);
-            border-radius: 10px; padding: 12px; margin-bottom: 15px;
+        .user-name-style { 
+            font-weight: 600; font-size: 15px; color: var(--user-text); 
+            letter-spacing: -0.01em; margin-right: 8px; white-space: nowrap;
         }
+        
+        .led { width: 18px; height: 18px; border-radius: 50%; background: var(--gray-led); cursor: pointer; flex-shrink: 0; }
+        .led.active { background: var(--green-led); box-shadow: 0 0 12px rgba(34, 197, 94, 0.5); }
+        
+        .promo-text { color: var(--green-led); font-weight: 700; font-size: 12px; display: block; margin-top: 2px; }
+        .days-left { color: var(--warn); font-size: 11px; font-weight: 600; display: block; }
+        .time-text { font-size: 10px; color: #94a3b8; font-weight: 400; }
 
-        .site-header { display: flex; align-items: center; margin-bottom: 12px; height: 28px; }
-        .site-header-logo { height: 100%; max-width: 110px; object-fit: contain; }
+        .calendar-icon { cursor: pointer; font-size: 18px; margin-left: 10px; opacity: 0.6; padding: 5px; }
 
-        .user-row {
-            background: #0d1117; border: 1px solid var(--border-color);
-            border-radius: 8px; padding: 10px; display: flex;
-            justify-content: space-between; align-items: center; margin-top: 6px;
-        }
+        .date-area { 
+            display: none; align-items: center; gap: 8px; background: #f1f5f9; 
+            padding: 10px; border-radius: 8px; width: 100%; justify-content: flex-end;
+        } 
 
-        .user-info { display: flex; align-items: center; gap: 8px; flex: 1; }
-        .user-name { font-weight: 500; font-size: 0.95rem; color: #e6edf3; }
+        .controls { margin-top: 15px; display: flex; gap: 8px; border-top: 1px solid #f1f5f9; padding-top: 15px; }
+        input[type="text"] { flex: 1; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; outline: none; }
+        input[type="text"]:focus { border-color: var(--blue); }
+        
+        .add-btn { cursor: pointer; padding: 0 20px; border: none; border-radius: 8px; background: var(--blue); color: white; font-weight: 700; font-size: 13px; }
+        .save-date-btn { background: #10b981; color: white; border: none; border-radius: 6px; padding: 8px 12px; cursor: pointer; font-size: 11px; font-weight: 700; }
+        .del-btn { background: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 11px; }
+        
+        input[type="date"] { border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px; font-size: 13px; color: #334155; flex: 1; max-width: 150px; }
 
-        .btn-delete {
-            background: transparent; border: 1px solid #30363d; color: #8b949e;
-            padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;
-            transition: 0.2s;
+        /* Mobil Optimizasyon */
+        @media (max-width: 600px) {
+            .user-row { flex-direction: column; align-items: flex-start; }
+            .user-info-box { width: 100%; }
+            .date-area { margin-top: 8px; }
+            .calendar-icon { margin-left: auto; }
+            h2 { font-size: 1.2rem; }
         }
-        .btn-delete:hover { background: var(--red-delete); color: white; border-color: var(--red-delete); }
-
-        .led-container { display: flex; gap: 10px; align-items: center; }
-        .led {
-            width: 28px; height: 28px; border-radius: 50%;
-            border: 2px solid #000; transition: all 0.3s ease; cursor: pointer;
-        }
-
-        .led-status-gray { background-color: var(--gray-led); box-shadow: inset 0 0 5px #000; }
-        .led-status-green { 
-            background-color: var(--green-led); 
-            box-shadow: 0 0 10px var(--green-led), inset 0 0 5px #fff; 
-        }
-
-        .log-section {
-            margin-top: 20px; background: var(--card-bg);
-            border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; width: 100%;
-        }
-        .log-header { color: var(--text-gold); font-weight: bold; margin-bottom: 8px; font-size: 0.85rem; }
-        .log-list {
-            background: #0d1117; border: 1px dotted var(--border-color);
-            padding: 5px; font-size: 0.75rem; max-height: 200px; overflow-y: auto; border-radius: 5px;
-        }
-        .log-item { display: flex; align-items: center; padding: 6px 4px; border-bottom: 1px solid #21262d; color: #8b949e; }
-        .log-date { color: #6e7681; font-size: 0.65rem; min-width: 70px; }
-        .site-badge { background: #30363d; padding: 1px 5px; border-radius: 3px; margin-right: 5px; font-size: 0.65rem; }
-        .action-text { color: #7ee787; margin-left: auto; }
-
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85); display: none; justify-content: center; align-items: center; z-index: 9999;
-        }
-        .modal-content {
-            background: var(--card-bg); border: 1px solid var(--border-color);
-            border-radius: 12px; padding: 20px; width: 85%; max-width: 320px; text-align: center;
-        }
-        .modal-buttons { display: flex; gap: 10px; margin-top: 20px; }
-        .modal-btn { flex: 1; padding: 10px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Genel Kontrol</h2>
-
-    <div class="add-user-section">
-        <select id="siteSelect">
-            <option value="KAVBET">KAVBET</option>
-            <option value="EGEBET">EGEBET</option>
-            <option value="LUNABET">LUNABET</option>
-            <option value="MATBET">MATBET</option>
-            <option value="MAVIBET">MAVIBET</option>
-            <option value="MEGABAHIS">MEGABAHIS</option>
-            <option value="NAKITBAHIS">NAKITBAHIS</option>
-            <option value="ODEONBET">ODEONBET</option>
-            <option value="PUSULABET">PUSULABET</option>
-            <option value="JOJOBET">JOJOBET</option>
-        </select>
-        <input type="text" id="usernameInput" placeholder="Kullanıcı Adı">
-        <button class="btn-add" onclick="addUser()">EKLE</button>
-    </div>
-
-    <div id="contentArea"></div>
-
-    <div class="log-section">
-        <div class="log-header">PROMOSYON LOGLARI</div>
-        <div class="log-list" id="logList"></div>
-    </div>
-</div>
-
-<div id="confirmModal" class="modal-overlay">
-    <div class="modal-content">
-        <div style="color:var(--text-gold); font-weight:bold; margin-bottom:10px;">ONAY</div>
-        <div id="modalMessage" style="font-size: 0.9rem;"></div>
-        <div class="modal-buttons">
-            <button class="modal-btn" style="background:#da3633; color:white;" id="confirmBtn">EVET</button>
-            <button class="modal-btn" style="background:#30363d; color:white;" onclick="closeModal()">İPTAL</button>
-        </div>
-    </div>
+    <h2>Premium Yönetim Paneli ⭐</h2>
+    <div id="site-list"></div>
 </div>
 
 <script>
-    const siteLogos = {
-        'KAVBET': 'https://github.com/trmaxturk/every-takip/blob/main/badges/kavbet.png?raw=true',
-        'EGEBET': 'https://github.com/trmaxturk/every-takip/blob/main/badges/egebet.png?raw=true',
-        'LUNABET': 'https://github.com/trmaxturk/every-takip/blob/main/badges/lunabet.png?raw=true',
-        'MATBET': 'https://github.com/trmaxturk/every-takip/blob/main/badges/matbet.png?raw=true',
-        'MAVIBET': 'https://github.com/trmaxturk/every-takip/blob/main/badges/mavibet.png?raw=true',
-        'MEGABAHIS': 'https://github.com/trmaxturk/every-takip/blob/main/badges/megabahis.png?raw=true',
-        'NAKITBAHIS': 'https://github.com/trmaxturk/every-takip/blob/main/badges/nakitbahis.png?raw=true',
-        'ODEONBET': 'https://github.com/trmaxturk/every-takip/blob/main/badges/odeonbet.png?raw=true',
-        'PUSULABET': 'https://github.com/trmaxturk/every-takip/blob/main/badges/pusulabet.png?raw=true',
-        'JOJOBET': 'https://github.com/trmaxturk/every-takip/blob/main/badges/bobobet.png?raw=true'
+    // Kendi Firebase yapılandırman
+    const firebaseConfig = {
+        apiKey: "AIzaSyA_AB1QtRr3bBHi5LXxeTKECtgPJrfyRa4",
+        authDomain: "deneme-b8281.firebaseapp.com",
+        projectId: "deneme-b8281",
+        storageBucket: "deneme-b8281.firebasestorage.app",
+        messagingSenderId: "844910163064",
+        appId: "1:844910163064:web:f4ad80295fb39d1322698d"
     };
 
-    // TEMİZLİK MOTORU: İstediğin kullanıcıları zorla siler
-    function forceCleanup() {
-        const initialCount = users.length;
-        users = users.filter(u => {
-            const isKavbetTarget = (u.site === "KAVBET" && u.username.toLowerCase() === "trmaxturk");
-            const isOdeonTarget = (u.site === "ODEONBET" && u.username.toLowerCase() === "maxbaba");
-            return !isKavbetTarget && !isOdeonTarget;
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const favoriler = ["Nakitbahis", "Mavibet", "Odeonbet", "Megabahis", "Kavbet", "Jojobet", "Matbet", "Pusulabet"];
+    const digerleri = ["HIZLICASİNO", "EGEBET", "TURBOSLOT", "HOLİGAN", "BETSMOVE", "LUNABET", "ELİTCASİNO", "COINBAR"];
+    const kuralsizSiteler = ["JOJOBET", "MATBET", "PUSULABET"];
+
+    function getDaysDiff(dateStr) {
+        if(!dateStr) return 999;
+        const deposit = new Date(dateStr);
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        deposit.setHours(0,0,0,0);
+        return Math.floor((today - deposit) / (1000 * 60 * 60 * 24));
+    }
+
+    function init() {
+        let tumSiteler = [...favoriler, ...digerleri];
+        const savedOrder = JSON.parse(localStorage.getItem('siteOrder'));
+        const liste = savedOrder || tumSiteler;
+
+        liste.forEach(siteAd => {
+            const cleanAd = siteAd.replace(' ⭐','');
+            const isFav = favoriler.includes(cleanAd);
+            const dbAd = cleanAd.replace(/\s/g, '').toUpperCase(); 
+
+            const div = document.createElement('div');
+            div.className = 'site-item';
+            div.setAttribute('data-id', siteAd);
+            div.innerHTML = `
+                <div class="site-header" onclick="toggleMenu('${dbAd}')">
+                    <span>${isFav && !siteAd.includes('⭐') ? siteAd + ' ⭐' : siteAd}</span>
+                    <span id="count-${dbAd}" style="font-size:12px; color:#94a3b8; font-weight:400;">...</span>
+                </div>
+                <div class="site-content" id="content-${dbAd}">
+                    <div id="users-${dbAd}"></div>
+                    <div class="controls">
+                        <input type="text" id="name-${dbAd}" placeholder="Kullanıcı Adı Ekle" onkeydown="handleEnter(event, '${dbAd}')">
+                        <button class="add-btn" onclick="addUser('${dbAd}')">EKLE</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('site-list').appendChild(div);
+            db.collection(dbAd).orderBy("createdAt", "asc").onSnapshot(snap => renderUsers(dbAd, snap));
         });
-        
-        if (users.length !== initialCount) {
-            saveData();
-        }
+
+        new Sortable(document.getElementById('site-list'), { animation: 150, handle: '.site-header', onEnd: () => {
+            const newOrder = Array.from(document.getElementById('site-list').children).map(el => el.getAttribute('data-id'));
+            localStorage.setItem('siteOrder', JSON.stringify(newOrder));
+        }});
     }
 
-    window.onload = () => { 
-        forceCleanup(); // Önce temizle
-        renderUI(); 
-        renderLogs(); 
-    };
-
-    function saveData() {
-        localStorage.setItem('users', JSON.stringify(users));
-        localStorage.setItem('logs', JSON.stringify(logs));
+    function handleEnter(event, siteAd) {
+        if (event.key === "Enter") addUser(siteAd);
     }
 
-    function addUser() {
-        const site = document.getElementById('siteSelect').value;
-        const username = document.getElementById('usernameInput').value.trim();
-        if (!username) return;
-
-        if (users.find(u => u.site === site && u.username.toLowerCase() === username.toLowerCase())) {
-            alert('Bu kullanıcı zaten ekli!'); return;
-        }
-
-        users.push({ id: 'u' + Date.now(), site, username, lastClaimDate: null });
-        saveData();
-        renderUI();
-        document.getElementById('usernameInput').value = '';
+    function addUser(siteAd) {
+        const nameInp = document.getElementById(`name-${siteAd}`);
+        if(!nameInp.value.trim()) return;
+        db.collection(siteAd).add({
+            name: nameInp.value.trim(),
+            lastDepositDate: "",
+            lastClaimDate: "", 
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => { nameInp.value = ""; nameInp.focus(); });
     }
 
-    function deleteUser(userId) {
-        const user = users.find(u => u.id === userId);
-        if (!user) return;
-        showModal(`${user.username} silinsin mi?`, () => {
-            users = users.filter(u => u.id !== userId);
-            saveData();
-            renderUI();
-            closeModal();
-        });
+    function toggleDateArea(docId) {
+        const area = document.getElementById(`date-area-${docId}`);
+        area.style.display = (area.style.display === 'flex') ? 'none' : 'flex';
     }
 
-    function handleClaim(userId) {
-        const index = users.findIndex(u => u.id === userId);
-        if (index === -1) return;
-        const today = new Date().toLocaleDateString('tr-TR');
-        const user = users[index];
+    function renderUsers(siteAd, snapshot) {
+        const container = document.getElementById(`users-${siteAd}`);
+        if(!container) return;
+        container.innerHTML = "";
+        document.getElementById(`count-${siteAd}`).innerText = snapshot.size + " Kişi";
 
-        if (user.lastClaimDate === today) {
-            showModal("Durumu sıfırlamak istiyor musunuz?", () => {
-                users[index].lastClaimDate = null;
-                logs = logs.filter(l => !(l.userId === userId && l.date === today));
-                saveData();
-                renderUI();
-                renderLogs();
-                closeModal();
-            });
-            return;
-        }
-
-        users[index].lastClaimDate = today;
-        const now = new Date();
-        logs.unshift({
-            userId, site: user.site, username: user.username,
-            timestamp: now.toLocaleDateString('tr-TR') + " " + now.toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}),
-            action: "promokod alındı", date: today, type: "claim"
-        });
-        saveData();
-        renderUI();
-        renderLogs();
-    }
-
-    function renderUI() {
-        const contentArea = document.getElementById('contentArea');
-        contentArea.innerHTML = '';
-        const today = new Date().toLocaleDateString('tr-TR');
-        
-        const grouped = users.reduce((acc, u) => {
-            if (!acc[u.site]) acc[u.site] = [];
-            acc[u.site].push(u);
-            return acc;
-        }, {});
-
-        const sortedSites = Object.keys(grouped).sort();
-        if (sortedSites.length === 0) {
-            contentArea.innerHTML = '<div style="text-align:center; padding:30px; color:#8b949e; background:var(--card-bg); border-radius:10px;">Liste şu an boş. Kullanıcı ekleyerek başlayın.</div>';
-            return;
-        }
-
-        sortedSites.forEach(site => {
-            let siteHTML = `<div class="site-card">
-                <div class="site-header">
-                    ${siteLogos[site] ? `<img src="${siteLogos[site]}" class="site-header-logo">` : `<span>${site}</span>`}
-                </div>`;
+        snapshot.forEach(doc => {
+            const user = doc.data();
+            const todayStr = new Date().toLocaleDateString('tr-TR');
+            const claimedToday = user.lastClaimDate && user.lastClaimDate.split(' ')[0] === todayStr;
             
-            grouped[site].sort((a,b) => a.username.localeCompare(b.username)).forEach(u => {
-                const isClaimed = u.lastClaimDate === today;
-                siteHTML += `
-                    <div class="user-row">
-                        <div class="user-info">
-                            <span class="user-name">${u.username}</span>
-                            <button class="btn-delete" onclick="deleteUser('${u.id}')">Sil</button>
-                        </div>
-                        <div class="led-container">
-                            <div class="led ${isClaimed ? 'led-status-green' : 'led-status-gray'}" onclick="handleClaim('${u.id}')"></div>
-                        </div>
-                    </div>`;
-            });
-            siteHTML += `</div>`;
-            contentArea.innerHTML += siteHTML;
+            const isRuleFree = kuralsizSiteler.includes(siteAd);
+            const daysPast = getDaysDiff(user.lastDepositDate);
+            const canClaim = isRuleFree || (user.lastDepositDate && daysPast >= 0 && daysPast <= 7);
+            const daysLeft = 7 - daysPast;
+
+            const row = document.createElement('div');
+            row.className = 'user-row';
+            row.innerHTML = `
+                <div class="user-info-box">
+                    <div class="led ${claimedToday ? 'active' : ''}" 
+                         style="${!canClaim && !claimedToday ? 'opacity:0.3;' : 'cursor:pointer;'}"
+                         onclick="if(${canClaim} && !${claimedToday}) claimPromo('${siteAd}', '${doc.id}')"></div>
+                    <div style="margin-left:12px;">
+                        <span class="user-name-style">${user.name}</span>
+                        ${claimedToday ? 
+                            `<span class="promo-text">Bugün Promosyon Kodunu Aldın. <br><small class="time-text">(${user.lastClaimDate})</small></span>` : 
+                            (!isRuleFree ? (user.lastDepositDate ? (canClaim ? `<span class="days-left">${daysLeft} gün daha alabilirsin.</span>` : `<span style="color:#ef4444; font-size:11px; font-weight:600;">Süre Doldu</span>`) : `<span style="color:#94a3b8; font-size:11px;">(Tarih Yok)</span>`) : '')
+                        }
+                    </div>
+                    <span class="calendar-icon" onclick="toggleDateArea('${doc.id}')">📅</span>
+                </div>
+                <div class="date-area" id="date-area-${doc.id}">
+                    <input type="date" id="row-date-${doc.id}" value="${user.lastDepositDate || ''}">
+                    <button class="save-date-btn" onclick="db.collection('${siteAd}').doc('${doc.id}').update({lastDepositDate: document.getElementById('row-date-${doc.id}').value})">KAYDET</button>
+                    <button class="del-btn" onclick="if(confirm('Silinsin mi?')) db.collection('${siteAd}').doc('${doc.id}').delete()">SİL</button>
+                </div>
+            `;
+            container.appendChild(row);
         });
     }
 
-    function renderLogs() {
-        const logList = document.getElementById('logList');
-        const displayLogs = logs.filter(l => l.type === "claim").slice(0, 50); 
-        if (displayLogs.length === 0) {
-            logList.innerHTML = '<div style="text-align:center; padding:10px; color:#6e7681;">Log kaydı yok.</div>';
-            return;
-        }
-        logList.innerHTML = displayLogs.map(l => `
-            <div class="log-item">
-                <span class="log-date">${l.timestamp}</span>
-                <span class="site-badge">${l.site}</span>
-                <span style="color:#e6edf3;">${l.username}</span>
-                <span class="action-text">✓</span>
-            </div>
-        `).join('');
+    function claimPromo(siteAd, docId) {
+        const d = new Date();
+        const dateStr = d.toLocaleDateString('tr-TR') + " " + d.toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+        db.collection(siteAd).doc(docId).update({ lastClaimDate: dateStr });
     }
 
-    function showModal(msg, onConfirm) {
-        document.getElementById('modalMessage').innerText = msg;
-        document.getElementById('confirmModal').style.display = 'flex';
-        document.getElementById('confirmBtn').onclick = onConfirm;
+    function toggleMenu(id) {
+        let el = document.getElementById('content-' + id);
+        if (el) el.style.display = (el.style.display === 'block') ? 'none' : 'block';
     }
 
-    function closeModal() { document.getElementById('confirmModal').style.display = 'none'; }
+    init();
 </script>
-
 </body>
 </html>
