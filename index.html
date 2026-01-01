@@ -34,134 +34,48 @@
             max-width: 600px; 
             margin: 0 auto; 
             position: relative; 
-            padding-top: 50px; /* Üstteki buton için boşluk */
+            padding-top: 50px; 
         }
 
-        h2 { 
-            text-align: center; 
-            font-size: 1.5rem; 
-            margin-bottom: 20px;
-        }
+        h2 { text-align: center; font-size: 1.5rem; margin-bottom: 20px; }
 
-        /* Sıfırla Butonu - Mobilde daha kolay tıklanması için optimize edildi */
         .reset-btn { 
-            position: absolute; 
-            top: 10px; 
-            right: 0; 
-            background: #6c757d; 
-            font-size: 12px; 
-            padding: 8px 12px; 
-            border: none;
-            border-radius: 6px;
-            color: white;
-            cursor: pointer;
-            z-index: 100;
+            position: absolute; top: 10px; right: 0; 
+            background: #6c757d; font-size: 12px; padding: 8px 12px; 
+            border: none; border-radius: 6px; color: white; cursor: pointer; z-index: 100;
         }
 
         .site-item { 
-            background: var(--card-bg); 
-            border: 1px solid #ddd; 
-            margin-bottom: 10px; 
-            border-radius: 10px; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.08); 
-            overflow: hidden;
+            background: var(--card-bg); border: 1px solid #ddd; 
+            margin-bottom: 10px; border-radius: 10px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08); overflow: hidden;
         }
 
         .site-header { 
-            padding: 15px; 
-            cursor: grab; 
-            display: flex; 
-            justify-content: space-between; 
-            font-weight: bold; 
-            align-items: center;
-            -webkit-user-select: none; /* Mobil seçimi engelleme */
+            padding: 15px; display: flex; justify-content: space-between; 
+            font-weight: bold; align-items: center;
         }
 
-        .site-content { 
-            display: none; 
-            padding: 15px; 
-            border-top: 1px solid #eee; 
-            background: #fafafa; 
+        /* Masaüstünde imleç sürükleme ikonu olsun */
+        @media (min-width: 768px) {
+            .site-header { cursor: grab; }
+            .site-header:active { cursor: grabbing; }
         }
 
-        .user-row { 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            padding: 12px 0; 
-            border-bottom: 1px solid #eee; 
-        }
+        .site-content { display: none; padding: 15px; border-top: 1px solid #eee; background: #fafafa; }
+        .user-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; }
+        .led { width: 18px; height: 18px; border-radius: 50%; background: var(--gray-led); cursor: pointer; flex-shrink: 0; transition: 0.3s; }
+        .led.active { background: var(--green-led); box-shadow: 0 0 10px var(--green-led); }
+        .user-info { display: flex; align-items: center; gap: 12px; flex-grow: 1; margin-right: 10px; }
+        .status-text { font-size: 11px; color: #666; display: block; margin-top: 2px; }
+        .controls { display: flex; gap: 8px; margin-top: 15px; }
+        input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+        button { cursor: pointer; padding: 10px 16px; border: none; border-radius: 6px; background: var(--primary-blue); color: white; font-weight: 500; }
+        .del-btn { background: #dc3545; font-size: 11px; padding: 6px 10px; }
 
-        .led { 
-            width: 18px; 
-            height: 18px; 
-            border-radius: 50%; 
-            background: var(--gray-led); 
-            cursor: pointer; 
-            flex-shrink: 0;
-            transition: 0.3s; 
-        }
-
-        .led.active { 
-            background: var(--green-led); 
-            box-shadow: 0 0 10px var(--green-led); 
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-grow: 1;
-            margin-right: 10px;
-        }
-
-        .status-text { 
-            font-size: 11px; 
-            color: #666; 
-            display: block;
-            margin-top: 2px;
-        }
-
-        .controls { 
-            display: flex; 
-            gap: 8px; 
-            margin-top: 15px; 
-        }
-
-        input { 
-            flex: 1; 
-            padding: 10px; 
-            border: 1px solid #ccc; 
-            border-radius: 6px; 
-            font-size: 14px;
-        }
-
-        button { 
-            cursor: pointer; 
-            padding: 10px 16px; 
-            border: none; 
-            border-radius: 6px; 
-            background: var(--primary-blue); 
-            color: white; 
-            font-weight: 500;
-        }
-
-        .del-btn { 
-            background: #dc3545; 
-            font-size: 11px; 
-            padding: 6px 10px; 
-        }
-
-        .drag-handle { color: #bbb; margin-right: 8px; font-size: 18px; }
-
-        /* Mobil Optimizasyonları */
-        @media (max-width: 480px) {
-            body { padding: 5px; }
-            .container { padding-top: 60px; }
-            .site-header { padding: 12px; font-size: 14px; }
-            input { font-size: 16px; } /* Mobil zoom engelleme için 16px */
-            .status-text { font-size: 10px; }
-        }
+        /* Masaüstünde ikonu göster, mobilde gizle */
+        .drag-handle { color: #bbb; margin-right: 8px; font-size: 18px; display: none; }
+        @media (min-width: 768px) { .drag-handle { display: inline-block; } }
     </style>
 </head>
 <body>
@@ -223,9 +137,18 @@
             db.collection(siteAd).orderBy("createdAt", "asc").onSnapshot(snapshot => renderUsers(siteAd, snapshot));
         });
 
+        // Mobilde sürüklemeyi devre dışı bırakan ayar:
         new Sortable(siteListContainer, { 
             animation: 150, 
             handle: '.site-header',
+            delay: 0,
+            touchStartThreshold: 20,
+            // Sadece mouse ile sürüklemeye izin ver, dokunmatik sürüklemeyi pasif yap
+            onChoose: function (evt) {
+                if (window.innerWidth < 768) {
+                    return false; // Mobilde sürüklemeyi başlatma
+                }
+            },
             onEnd: saveNewOrder 
         });
     }
