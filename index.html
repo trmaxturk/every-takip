@@ -1,310 +1,246 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>XP Yönetim Paneli</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>XP Pro Panel</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
-<link rel="icon" type="image/png" href="https://ui-avatars.com/api/?name=XP&background=0a246a&color=fff&rounded=true">
-
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-
-<style>
-:root{
-  --xp-bg:#ece9d8;
-  --xp-panel:#f6f6f6;
-  --xp-border:#7f7f7f;
-  --xp-border-light:#ffffff;
-  --xp-border-dark:#404040;
-  --xp-blue:#0a246a;
-  --xp-green:#0b8a00;
-}
-
-*{box-sizing:border-box}
-
-body{
-  margin:0;
-  background:var(--xp-bg);
-  font-family:Tahoma, Verdana, Arial;
-  font-size:12px;
-  color:#000;
-}
-
-/* ANA PENCERE */
-.container{
-  max-width:620px;
-  margin:12px auto;
-  background:var(--xp-panel);
-  border:1px solid var(--xp-border-dark);
-  box-shadow:
-    inset 1px 1px 0 var(--xp-border-light),
-    inset -1px -1px 0 var(--xp-border);
-}
-
-/* BAŞLIK */
-.titlebar{
-  background:linear-gradient(#0a246a,#3a6ea5);
-  color:#fff;
-  padding:4px 8px;
-  font-weight:bold;
-  font-size:12px;
-}
-
-/* ARAÇ ÇUBUĞU */
-.toolbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:4px 6px;
-  background:#d4d0c8;
-  border-top:1px solid var(--xp-border-light);
-  border-bottom:1px solid var(--xp-border-dark);
-}
-
-/* BUTON */
-button{
-  font-family:Tahoma;
-  font-size:11px;
-  padding:2px 10px;
-  border-top:1px solid var(--xp-border-light);
-  border-left:1px solid var(--xp-border-light);
-  border-right:1px solid var(--xp-border-dark);
-  border-bottom:1px solid var(--xp-border-dark);
-  background:#d4d0c8;
-  cursor:pointer;
-}
-button:active{
-  border-top:1px solid var(--xp-border-dark);
-  border-left:1px solid var(--xp-border-dark);
-  border-right:1px solid var(--xp-border-light);
-  border-bottom:1px solid var(--xp-border-light);
-}
-
-/* SWITCH */
-.switch{
-  display:flex;
-  align-items:center;
-  gap:4px;
-  font-size:11px;
-}
-
-input[type="checkbox"]{
-  width:13px;
-  height:13px;
-}
-
-/* SITE */
-.site-item{
-  border-bottom:1px solid #b5b5b5;
-}
-
-.site-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:4px 6px;
-  background:#efefef;
-  cursor:pointer;
-}
-.site-header:hover{
-  background:#e0e0e0;
-}
-
-.drag-handle{
-  margin-right:6px;
-  cursor:move;
-}
-
-/* İÇERİK */
-.site-content{
-  display:none;
-  padding:6px;
-  background:#fff;
-  border-top:1px solid #b5b5b5;
-}
-
-/* KULLANICI */
-.user-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:3px 0;
-  border-bottom:1px dotted #c0c0c0;
-}
-
-.user-info{
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-
-.led{
-  width:10px;
-  height:10px;
-  border:1px solid #000;
-  background:#9e9e9e;
-  cursor:pointer;
-}
-.led.active{
-  background:var(--xp-green);
-}
-
-.status-text{
-  font-size:10px;
-  color:#333;
-}
-
-/* EKLE */
-.controls{
-  display:flex;
-  gap:4px;
-  margin-top:6px;
-}
-
-input[type="text"]{
-  flex:1;
-  padding:2px 4px;
-  font-family:Tahoma;
-  font-size:11px;
-  border-top:1px solid var(--xp-border-dark);
-  border-left:1px solid var(--xp-border-dark);
-  border-right:1px solid var(--xp-border-light);
-  border-bottom:1px solid var(--xp-border-light);
-}
-
-.del-btn{
-  font-size:10px;
-  padding:2px 6px;
-  background:#e6b0b0;
-}
-</style>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f8fafc; user-select: none; -webkit-tap-highlight-color: transparent; }
+        .site-content { display: none; }
+        .site-content.active { display: block; }
+        .status-led { width: 14px; height: 14px; border-radius: 4px; transition: all 0.2s ease; }
+        .drag-ghost { opacity: 0.4; background: #dbeafe; border: 2px dashed #3b82f6; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 8px 16px; border-radius: 20px; font-size: 12px; z-index: 1000; display: none; }
+        /* İlerleme Çubuğu Animasyonu */
+        .progress-bar { transition: width 0.5s ease-in-out; }
+    </style>
 </head>
-
 <body>
 
-<div class="container">
-  <div class="titlebar">Yönetim Paneli – Windows XP</div>
+<div id="toast" class="toast">Kopyalandı!</div>
 
-  <div class="toolbar">
-    <div class="switch">
-      <input type="checkbox" id="drag-switch" onchange="toggleDragAbility()">
-      <label for="drag-switch">Sıralama</label>
+<div class="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm px-4 py-2">
+    <div class="flex justify-between items-center mb-2">
+        <div class="flex items-center gap-3">
+            <h1 class="text-sm font-extrabold text-slate-800 tracking-tight">PANEL <span id="total-users" class="text-blue-600 font-medium">0</span></h1>
+            <button id="lock-btn" onclick="toggleLock()" class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 text-slate-500 border border-slate-200 active:scale-90 transition-all">
+                <i class="fas fa-lock text-xs" id="lock-icon"></i>
+            </button>
+        </div>
+        <button onclick="resetAllStatus()" class="text-[10px] bg-red-50 text-red-600 px-3 py-2 rounded-lg border border-red-100 font-bold tracking-wider">SIFIRLA</button>
     </div>
-    <button onclick="resetAllStatus()">Sıfırla</button>
-  </div>
-
-  <div id="site-list"></div>
+    
+    <div class="relative">
+        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+        <input type="text" id="global-search" onkeyup="filterUsers()" placeholder="Kullanıcı veya site ara..." 
+               class="w-full pl-9 pr-3 py-2 bg-slate-100 rounded-xl text-xs outline-none border border-transparent focus:border-blue-400 focus:bg-white transition-all">
+    </div>
 </div>
 
-<script>
-firebase.initializeApp({
-  apiKey:"AIzaSyA_AB1QtRr3bBHi5LXxeTKECtgPJrfyRa4",
-  authDomain:"deneme-b8281.firebaseapp.com",
-  projectId:"deneme-b8281"
-});
-const db=firebase.firestore();
+<div id="site-list" class="p-3 space-y-2 pb-24">
+    </div>
 
-let siteler=["HIZLICASİNO","EGEBET","KAVBET","PUSULABET","HITBET","TURBOSLOT","MATBET","JOJOBET"];
+<script>
+// FIREBASE AYARLARI
+firebase.initializeApp({
+    apiKey:"AIzaSyA_AB1QtRr3bBHi5LXxeTKECtgPJrfyRa4",
+    authDomain:"deneme-b8281.firebaseapp.com",
+    projectId:"deneme-b8281"
+});
+const db = firebase.firestore();
+let siteler = ["HIZLICASİNO","EGEBET","KAVBET","PUSULABET","HITBET","TURBOSLOT","MATBET","JOJOBET"];
 let sortableInstance;
+let isLocked = true;
 
 async function init(){
-  const doc=await db.collection("settings").doc("siteOrder").get();
-  if(doc.exists) siteler=doc.data().list;
-  render();
+    const doc = await db.collection("settings").doc("siteOrder").get();
+    if(doc.exists) siteler = doc.data().list;
+    render();
 }
 
 function render(){
-  siteList.innerHTML="";
-  siteler.forEach(site=>{
-    const div=document.createElement("div");
-    div.className="site-item";
-    div.dataset.id=site;
-    div.innerHTML=`
-      <div class="site-header" onclick="toggleMenu('${site}')">
-        <div><span class="drag-handle">☰</span>${site}</div>
-        <span id="count-${site}">...</span>
-      </div>
-      <div class="site-content" id="content-${site}">
-        <div id="users-${site}"></div>
-        <div class="controls">
-          <input id="input-${site}" placeholder="Kullanıcı adı">
-          <button onclick="addUser('${site}')">Ekle</button>
-        </div>
-      </div>`;
-    siteList.appendChild(div);
-    db.collection(site).orderBy("createdAt").onSnapshot(s=>renderUsers(site,s));
-  });
+    const siteListEl = document.getElementById("site-list");
+    siteListEl.innerHTML = "";
+    siteler.forEach(site => {
+        const item = document.createElement("div");
+        item.className = "bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden site-container transition-all";
+        item.dataset.id = site;
+        item.innerHTML = `
+            <div class="p-3 cursor-pointer bg-white" onclick="toggleSite('${site}')" id="header-${site}">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-chevron-right text-[10px] text-slate-300 transition-transform" id="icon-${site}"></i>
+                        <span class="text-sm font-bold text-slate-700 uppercase tracking-tight">${site}</span>
+                    </div>
+                    <span id="count-${site}" class="text-[10px] font-bold text-slate-400">0/0</span>
+                </div>
+                <div class="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
+                    <div id="progress-${site}" class="progress-bar h-full bg-emerald-400" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div id="content-${site}" class="site-content border-t border-slate-50">
+                <div id="users-${site}" class="divide-y divide-slate-50"></div>
+                <div class="p-3 bg-slate-50 flex gap-2">
+                    <input id="input-${site}" type="text" placeholder="Hızlı kullanıcı ekle..." 
+                           class="flex-1 text-xs px-3 py-2 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+                    <button onclick="addUser('${site}')" class="bg-slate-800 text-white px-4 py-2 rounded-lg text-xs active:scale-95 transition-all">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        siteListEl.appendChild(item);
+        db.collection(site).orderBy("createdAt", "desc").onSnapshot(s => renderUsers(site, s));
+    });
 
-  sortableInstance=new Sortable(siteList,{
-    handle:".site-header",
-    disabled:true,
-    onEnd:saveOrder
-  });
+    sortableInstance = new Sortable(siteListEl, {
+        animation: 200,
+        ghostClass: 'drag-ghost',
+        disabled: true,
+        onEnd: saveOrder
+    });
 }
 
-function toggleMenu(id){
-  const el=document.getElementById("content-"+id);
-  el.style.display=el.style.display==="block"?"none":"block";
+function renderUsers(site, snapshot){
+    const box = document.getElementById("users-"+site);
+    const cnt = document.getElementById("count-"+site);
+    const prog = document.getElementById("progress-"+site);
+    
+    box.innerHTML = "";
+    const total = snapshot.size;
+    const activeOnes = snapshot.docs.filter(d => d.data().status).length;
+    const percent = total > 0 ? (activeOnes / total) * 100 : 0;
+    
+    cnt.innerText = `${activeOnes}/${total}`;
+    prog.style.width = percent + "%";
+    
+    updateTotalCounter();
+
+    snapshot.forEach(doc => {
+        const u = doc.data();
+        box.innerHTML += `
+            <div class="flex items-center justify-between p-2 pl-4 bg-white hover:bg-slate-50 transition-colors">
+                <div class="flex items-center gap-4 flex-1 py-1" onclick="handleUserClick('${site}','${doc.id}',${u.status},'${u.name}')">
+                    <div class="status-led ${u.status ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] border-emerald-600' : 'bg-slate-200 border-slate-300'} border"></div>
+                    <div class="flex flex-col">
+                        <span class="text-[13px] ${u.status ? 'text-slate-900 font-bold' : 'text-slate-500 font-medium'}">${u.name}</span>
+                        ${u.status ? `<span class="text-[10px] text-emerald-600 font-bold leading-none mt-1">${u.date}</span>` : ''}
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <button onclick="copyToClipboard('${u.name}')" class="text-slate-300 px-3 py-2 active:text-blue-500"><i class="far fa-copy text-xs"></i></button>
+                    <button onclick="deleteUser('${site}','${doc.id}')" class="text-slate-200 px-3 py-2 active:text-red-500"><i class="fas fa-times text-xs"></i></button>
+                </div>
+            </div>
+        `;
+    });
 }
 
-function toggleDragAbility(){
-  sortableInstance.option("disabled",!document.getElementById("drag-switch").checked);
+// AKSİYONLAR
+async function handleUserClick(site, id, status, name) {
+    const newStatus = !status;
+    const timeNow = newStatus ? new Date().toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'}) : "";
+    
+    await db.collection(site).doc(id).update({ status: newStatus, date: timeNow });
+    
+    if (newStatus) {
+        copyToClipboard(name);
+    }
 }
 
-function saveOrder(){
-  const list=[...document.querySelectorAll(".site-item")].map(i=>i.dataset.id);
-  db.collection("settings").doc("siteOrder").set({list});
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        const t = document.getElementById("toast");
+        t.innerText = text + " Kopyalandı!";
+        t.style.display = "block";
+        setTimeout(() => t.style.display = "none", 1500);
+    });
+}
+
+function toggleLock() {
+    isLocked = !isLocked;
+    const btn = document.getElementById("lock-btn");
+    const icon = document.getElementById("lock-icon");
+    sortableInstance.option("disabled", isLocked);
+
+    if (isLocked) {
+        btn.className = "w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 text-slate-500 border border-slate-200 active:scale-90 transition-all";
+        icon.className = "fas fa-lock text-xs";
+    } else {
+        btn.className = "w-9 h-9 flex items-center justify-center rounded-xl bg-orange-500 text-white border border-orange-600 active:scale-90 transition-all shadow-lg shadow-orange-200";
+        icon.className = "fas fa-lock-open text-xs";
+    }
+}
+
+function toggleSite(site){
+    const content = document.getElementById("content-"+site);
+    const icon = document.getElementById("icon-"+site);
+    const isActive = content.classList.contains('active');
+    if(isActive) {
+        content.classList.remove('active');
+        icon.style.transform = "rotate(0deg)";
+    } else {
+        content.classList.add('active');
+        icon.style.transform = "rotate(90deg)";
+    }
 }
 
 function addUser(site){
-  const i=document.getElementById("input-"+site);
-  if(!i.value.trim())return;
-  db.collection(site).add({
-    name:i.value,
-    status:false,
-    date:"",
-    createdAt:firebase.firestore.FieldValue.serverTimestamp()
-  });
-  i.value="";
+    const i = document.getElementById("input-"+site);
+    if(!i.value.trim()) return;
+    db.collection(site).add({
+        name: i.value.trim(),
+        status: false,
+        date: "",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    i.value = "";
 }
 
-function toggleStatus(site,id,status){
-  const d=status?"":new Date().toLocaleString("tr-TR");
-  db.collection(site).doc(id).update({status:!status,date:d});
+function deleteUser(site, id){
+    if(confirm("Silinsin mi?")) db.collection(site).doc(id).delete();
 }
 
-function renderUsers(site,snapshot){
-  const box=document.getElementById("users-"+site);
-  const cnt=document.getElementById("count-"+site);
-  box.innerHTML="";
-  cnt.innerText=snapshot.size+" kişi";
-  snapshot.forEach(doc=>{
-    const u=doc.data();
-    box.innerHTML+=`
-    <div class="user-row">
-      <div class="user-info">
-        <div class="led ${u.status?"active":""}" onclick="toggleStatus('${site}','${doc.id}',${u.status})"></div>
-        <div>
-          <b>${u.name}</b>
-          <div class="status-text">${u.status?"Kod Alındı":"Kod Alınmadı"}</div>
-        </div>
-      </div>
-      <button class="del-btn" onclick="db.collection('${site}').doc('${doc.id}').delete()">Sil</button>
-    </div>`;
-  });
+function filterUsers(){
+    const val = document.getElementById("global-search").value.toLowerCase();
+    document.querySelectorAll(".site-container").forEach(siteEl => {
+        const siteName = siteEl.dataset.id.toLowerCase();
+        siteEl.style.display = siteName.includes(val) ? "block" : "none";
+    });
+}
+
+function saveOrder(){
+    const list = [...document.querySelectorAll(".site-container")].map(i => i.dataset.id);
+    db.collection("settings").doc("siteOrder").set({list});
 }
 
 async function resetAllStatus(){
-  if(!confirm("Hepsi sıfırlansın mı?"))return;
-  for(const s of siteler){
-    const snap=await db.collection(s).where("status","==",true).get();
-    snap.forEach(d=>db.collection(s).doc(d.id).update({status:false,date:""}));
-  }
+    if(!confirm("Tüm listeler sıfırlansın mı?")) return;
+    for(const s of siteler){
+        const snap = await db.collection(s).where("status","==",true).get();
+        const batch = db.batch();
+        snap.forEach(d => batch.update(db.collection(s).doc(d.id), {status: false, date: ""}));
+        await batch.commit();
+    }
 }
 
-const siteList=document.getElementById("site-list");
+function updateTotalCounter(){
+    let total = 0;
+    document.querySelectorAll("[id^='count-']").forEach(el => {
+        const parts = el.innerText.split("/");
+        total += parseInt(parts[1]) || 0;
+    });
+    document.getElementById("total-users").innerText = "(" + total + ")";
+}
+
 init();
 </script>
 
